@@ -31,11 +31,12 @@ def load_cfg() -> dict:
         return yaml.safe_load(f)
 
 
-def gate_contamination() -> None:
-    """Rule #1: never train if train/test overlap can't be proven zero."""
+def gate_contamination(train_file: str | Path | None = None) -> None:
+    """Rule #1: never train if train/test overlap can't be proven zero.
+    MUST audit the file training actually consumes (not the default path)."""
     sys.path.insert(0, str(ROOT))
     from data.verify_split import main as verify
-    code = verify()
+    code = verify(instruct_path=train_file)
     if code != 0:
         raise SystemExit("ABORT: verify_split failed — refusing to train (rule #1).")
 
@@ -135,12 +136,31 @@ def build_trainer(cfg: dict, max_steps: int | None = None,
 
     def render(batch):
         texts = [
-            tokenizer.apply_chat_template(m, tokenize=False, add_generation_prompt=False)
+            # enable_thinking=False: Qwen3 templates default to <think> blocks;
+            # training targets must be the bare JSON the harness parses at eval.
+            # No-op on templates that ignore the variable (Qwen2.5, Llama).
+            tokenizer.apply_chat_template(m, tokenize=False,
+                                          add_generation_prompt=False,
+                                          enable_thinking=False)
             for m in batch["messages"]
         ]
         return {"text": texts}
 
     ds = ds.map(render, batched=True, remove_columns=ds.column_names)
+
+    # right-truncation at max_length would silently cut the assistant JSON
+    # target off the LONGEST windows — drop over-length examples instead and
+    # report the loss so it's a visible data decision, not silent corruption.
+    max_len = int(cfg["max_seq_length"])
+    before = len(ds)
+    ds = ds.filter(lambda ex: len(tokenizer(ex["text"],
+                                            add_special_tokens=False).input_ids) <= max_len)
+    dropped = before - len(ds)
+    if dropped:
+        print(f"   dropped {dropped}/{before} examples over max_seq_length={max_len} "
+              f"({dropped/before:.1%}) — answers would have been truncated")
+    if len(ds) == 0:
+        raise SystemExit("ABORT: all examples exceed max_seq_length — check window size.")
 
     import inspect
     sft_kwargs = dict(
@@ -217,7 +237,7 @@ def main() -> None:
     base = args.base_model or cfg["base_model"]
     print(f"   base={base}  seq={cfg['max_seq_length']}  "
           f"epochs={cfg['epochs']}  max_steps={args.max_steps}  lr={cfg['learning_rate']}")
-    gate_contamination()  # rule #1 — must pass
+    gate_contamination(ROOT / cfg["train_file"])  # rule #1 — audits the ACTUAL file
 
     trainer, model, tokenizer = build_trainer(
         cfg, max_steps=args.max_steps, base_model=args.base_model,

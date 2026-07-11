@@ -15,7 +15,8 @@ from training.train_qlora import build_trainer, gate_contamination, load_cfg
 def main() -> None:
     cfg = load_cfg()
     print("== QLoRA smoke test: 10 steps ==")
-    gate_contamination()  # rule #1 even for the smoke
+    from training.train_qlora import ROOT
+    gate_contamination(ROOT / cfg["train_file"])  # rule #1 even for the smoke
 
     trainer, model, _ = build_trainer(cfg, max_steps=10)
     result = trainer.train()

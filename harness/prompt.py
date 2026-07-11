@@ -53,25 +53,34 @@ def build_question_text(question: str, category: str) -> str:
     )
 
 
-_JSON_RE = re.compile(r"\{.*\}", re.DOTALL)
+_THINK_RE = re.compile(r"<think>.*?(</think>|$)", re.DOTALL)
+
+
+def _first_json_object(raw: str) -> dict | None:
+    """First complete JSON object in raw, via raw_decode from each '{'.
+    Unlike a greedy regex, trailing text containing '}' cannot break parsing."""
+    dec = json.JSONDecoder()
+    i = raw.find("{")
+    while i != -1:
+        try:
+            obj, _ = dec.raw_decode(raw, i)
+            if isinstance(obj, dict):
+                return obj
+        except json.JSONDecodeError:
+            pass
+        i = raw.find("{", i + 1)
+    return None
 
 
 def parse_response(text: str) -> dict:
     """Robustly extract {present, spans, confidence} from a model response.
-    On any parse failure, fall back to 'absent' (safe: contributes no spans)."""
+    On any parse failure, fall back to 'absent' (safe: contributes no spans).
+    Strips reasoning-model <think> blocks (e.g. Qwen3) before parsing."""
     if not text:
         return {"present": False, "spans": [], "confidence": 0.0}
-    raw = text.strip()
-    # strip code fences if present
-    if raw.startswith("```"):
-        raw = raw.strip("`")
-        raw = re.sub(r"^(json|JSON)\s*", "", raw).strip()
-    m = _JSON_RE.search(raw)
-    if not m:
-        return {"present": False, "spans": [], "confidence": 0.0}
-    try:
-        obj = json.loads(m.group(0))
-    except json.JSONDecodeError:
+    raw = _THINK_RE.sub("", text).strip()
+    obj = _first_json_object(raw)
+    if obj is None:
         return {"present": False, "spans": [], "confidence": 0.0}
     present = bool(obj.get("present", False))
     spans = obj.get("spans") or []

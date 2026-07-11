@@ -47,6 +47,11 @@ def test_parse():
         ('{"present": true, "spans": "single", "confidence": 5}', True),  # non-list span, conf clamp
         ('prefix {"present": true, "spans": ["A"], "confidence": "oops"} suffix', True),
         ('{"present": true, "spans": [123, "", "B"]}', True),   # mixed/empty spans
+        # trailing text containing '}' must not break parsing (greedy-regex bug)
+        ('{"present": true, "spans": ["X"], "confidence": 0.7} see clause 7.2 {sic}', True),
+        # Qwen3-style <think> reasoning stripped before parsing
+        ('<think>hmm {"present": false}</think>{"present": true, "spans": ["Y"], "confidence": 0.8}', True),
+        ('<think>never closed, no json after', False),          # unterminated think
     ]
     for text, expect_present in cases:
         p = P.parse_response(text)

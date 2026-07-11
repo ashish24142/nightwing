@@ -84,19 +84,41 @@ class LocalBackend(Backend):
         self.device = next(model.parameters()).device
 
     # ------------------------------------------------------------------
-    def _generate_batch(self, users: list[str]) -> list[tuple[str, float | None]]:
-        """Greedy-generate for a batch of user prompts (shared SYSTEM_PROMPT).
-        Left-padded so all inputs share one length and gen tokens align.
+    def _render(self, window_text: str, qtext: str) -> str:
+        user = P.build_contract_block(window_text) + "\n\n" + qtext
+        # enable_thinking=False: Qwen3 templates default to <think> reasoning,
+        # which burns the token budget before the JSON; harmless no-op on
+        # templates that ignore the variable (e.g. Qwen2.5, Llama).
+        return self.tokenizer.apply_chat_template(
+            [{"role": "system", "content": P.SYSTEM_PROMPT},
+             {"role": "user", "content": user}],
+            tokenize=False, add_generation_prompt=True, enable_thinking=False)
+
+    def _fit(self, window_text: str, qtext: str) -> str:
+        """Render (window, question) so it FITS max_seq_length by trimming the
+        WINDOW text — never the question/instructions (right-truncation would
+        cut the generation cue and silently break dense windows)."""
+        max_len = int(self.cfg.get("max_seq_length", 4096))
+        text = self._render(window_text, qtext)
+        for _ in range(4):
+            n = len(self.tokenizer(text, add_special_tokens=False).input_ids)
+            if n <= max_len:
+                return text
+            # trim window chars proportionally to the token overshoot (+margin)
+            keep = max(200, int(len(window_text) * (max_len / n) * 0.95))
+            if keep >= len(window_text):
+                keep = len(window_text) - 200
+            window_text = window_text[:keep]
+            text = self._render(window_text, qtext)
+        return text  # pathological tokenization: hard truncation below still guards
+
+    def _generate_batch(self, pairs: list[tuple[str, str]]) -> list[tuple[str, float | None]]:
+        """Greedy-generate for a batch of (window_text, question_text) pairs
+        (shared SYSTEM_PROMPT). Left-padded so gen tokens align.
         Returns (text, p_present) per prompt: p_present is the softmax mass on
         'true' vs 'false' at the JSON boolean position — a real, graded
         confidence for the PR sweep (None if no boolean token was emitted)."""
-        texts = [
-            self.tokenizer.apply_chat_template(
-                [{"role": "system", "content": P.SYSTEM_PROMPT},
-                 {"role": "user", "content": u}],
-                tokenize=False, add_generation_prompt=True)
-            for u in users
-        ]
+        texts = [self._fit(w, q) for w, q in pairs]
         enc = self.tokenizer(
             texts, return_tensors="pt", padding=True, truncation=True,
             max_length=self.cfg.get("max_seq_length", 4096))
@@ -126,13 +148,13 @@ class LocalBackend(Backend):
             results.append((text, p_present))
         return results
 
-    def _run_jobs(self, users: list[str]) -> list[tuple[str, float | None] | None]:
-        """Batch through all prompts; on OOM, halve the batch / fall back to 1."""
+    def _run_jobs(self, pairs: list[tuple[str, str]]) -> list[tuple[str, float | None] | None]:
+        """Batch through all (window, question) pairs; on OOM, halve the batch."""
         outs: list[tuple[str, float | None] | None] = []
         bs = self.gen_batch_size
         i = 0
-        while i < len(users):
-            chunk = users[i:i + bs]
+        while i < len(pairs):
+            chunk = pairs[i:i + bs]
             try:
                 outs.extend(self._generate_batch(chunk))
                 i += len(chunk)
@@ -151,14 +173,14 @@ class LocalBackend(Backend):
         res = ContractResult()
         if not windows:
             return res
-        # build every (question, window) prompt, then batch-generate
-        jobs = []  # (qid, user_prompt)
+        # build every (question, window) pair, then batch-generate
+        jobs = []  # (qid, (window_text, question_text))
         for q in questions:
             qtext = P.build_question_text(q.question, q.category)
             for w in windows:
-                jobs.append((q.qid, P.build_contract_block(w.text) + "\n\n" + qtext))
+                jobs.append((q.qid, (w.text, qtext)))
         try:
-            outs = self._run_jobs([u for _, u in jobs])
+            outs = self._run_jobs([pair for _, pair in jobs])
         except Exception as e:  # whole-contract generation failure
             print(f"      ! local contract gen failed: {type(e).__name__}: {str(e)[:100]}")
             res.errors = len(questions)
@@ -188,6 +210,8 @@ class LocalBackend(Backend):
             a = agg[q.qid]
             res.nbest[q.qid] = P.to_nbest(
                 {"present": a["present"], "spans": a["spans"], "confidence": a["conf"]})
-        res.errors = len(failed_qids)  # qids where every window OOM'd at batch=1
+        # errors = qids with >=1 failed window (predictions still emitted from
+        # the surviving windows of that qid — partial coverage, not a dropped qid)
+        res.errors = len(failed_qids)
         res.usage = Usage()  # local inference is free; no $ tracking
         return res

@@ -81,6 +81,16 @@ def main() -> None:
     print(f"== run_eval: backend={backend_name} split={args.split} "
           f"limit={args.limit or 'ALL'} ==")
 
+    # fine-tuned (local) results are PILOT results, not frontier baselines —
+    # build_comparison reads pilots from results/pilot/ and frontier from
+    # results/baselines/; filing them together corrupts the comparison.
+    is_local = config["backends"][backend_name]["type"] == "local_model"
+    out_dir = RESULTS_DIR.parent / "pilot" if is_local else RESULTS_DIR
+    if is_local and args.workers > 1:
+        # one shared HF model is not thread-safe; LocalBackend batches internally
+        print(f"   NOTE: --workers {args.workers} ignored for local backends (forcing 1)")
+        args.workers = 1
+
     backend = build_backend(backend_name, config)
     print(f"   model_id={backend.model_id}")
 
@@ -95,8 +105,8 @@ def main() -> None:
 
     # --- crash-safe checkpoint: one JSONL line per completed contract.
     # Resume skips done contracts so a killed run never loses paid work (rule #6).
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    ckpt_path = RESULTS_DIR / f"{label}.ckpt.jsonl"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    ckpt_path = out_dir / f"{label}.ckpt.jsonl"
     done_titles: set = set()
     if ckpt_path.exists():
         bad = 0
@@ -210,7 +220,6 @@ def main() -> None:
     cost = ct.summary()
     per_contract = ct.per_unit(n)
     extrapolated_full = round(per_contract * FULL_TEST_CONTRACTS, 2)
-    ledger = ct.commit_to_ledger(label)
 
     result = {
         "label": label,
@@ -228,18 +237,30 @@ def main() -> None:
         "cost": cost,
         "cost_per_contract_usd": round(per_contract, 4),
         "extrapolated_full_test_usd": extrapolated_full,
-        "cumulative_spend_usd": ledger["cumulative_usd"],
     }
 
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = Path(args.out) if args.out else RESULTS_DIR / f"{label}.json"
+    # write order matters: results + predictions become durable FIRST, then the
+    # ledger commit, then checkpoint cleanup — a crash at any point leaves
+    # either resumable work or booked-spend WITH its results, never spend alone.
+    out_path = Path(args.out) if args.out else out_dir / f"{label}.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2)
-    # save raw predictions alongside (gitignored if large)
-    with open(RESULTS_DIR / f"{label}_predictions.json", "w", encoding="utf-8") as f:
+    # save raw predictions alongside (smoke dumps gitignored)
+    with open(out_dir / f"{label}_predictions.json", "w", encoding="utf-8") as f:
         json.dump(nbest, f)
-    # final results are durable now -> checkpoint no longer needed
-    ckpt_path.unlink(missing_ok=True)
+
+    ledger = ct.commit_to_ledger(label)
+    result["cumulative_spend_usd"] = ledger["cumulative_usd"]
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(result, f, indent=2)
+
+    if state["failed"]:
+        # keep the checkpoint: a re-run must retry ONLY the failed contracts,
+        # not re-pay for the succeeded ones
+        print(f"   checkpoint kept ({ckpt_path.name}) — re-run to retry "
+              f"{len(state['failed'])} failed contract(s) without re-paying")
+    else:
+        ckpt_path.unlink(missing_ok=True)
 
     # -- report --
     print("\n=== RESULT ===")

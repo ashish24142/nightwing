@@ -31,7 +31,10 @@ def _titles(squad_json: Path) -> set[str]:
         return {c["title"] for c in json.load(f)["data"]}
 
 
-def main() -> int:
+def main(instruct_path: str | Path | None = None) -> int:
+    """instruct_path: the prepared training file to audit — MUST be the file
+    training will actually consume (train_qlora passes its cfg['train_file'])."""
+    instruct = Path(instruct_path) if instruct_path else TRAIN_INSTRUCT
     if not (TRAIN_JSON.exists() and TEST_JSON.exists()):
         print("FAIL: run data/download_cuad.py first (train/test json missing)")
         return 1
@@ -48,13 +51,13 @@ def main() -> int:
         return 1
 
     # --- check 2 & 3: prepared training data provenance ---
-    if not TRAIN_INSTRUCT.exists():
-        print(f"[2] {TRAIN_INSTRUCT.name} not found — run data/prepare_train.py "
+    if not instruct.exists():
+        print(f"[2] {instruct.name} not found — run data/prepare_train.py "
               "before training. (split check above passed.)")
         return 0  # nothing prepared yet; split itself is clean
 
     prepared_titles, n = set(), 0
-    with open(TRAIN_INSTRUCT, "r", encoding="utf-8") as f:
+    with open(instruct, "r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if not line:

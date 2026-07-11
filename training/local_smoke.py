@@ -32,7 +32,6 @@ def main() -> None:
     cfg["gradient_accumulation_steps"] = 4
 
     print("== LOCAL PIPELINE SMOKE ==")
-    gate_contamination()  # rule #1
 
     # subset the data so tokenization is fast (smoke only needs a few hundred)
     full = ROOT / cfg["train_file"]
@@ -42,6 +41,7 @@ def main() -> None:
     subset.write_text("".join(lines), encoding="utf-8")
     cfg["train_file"] = str(subset.relative_to(ROOT))
     print(f"   using {len(lines)}-example subset for the smoke")
+    gate_contamination(subset)  # rule #1 — audits the file actually trained on
 
     print(f"\n[1/3] train {STEPS} steps of {SMOKE_MODEL} (bf16 LoRA)...")
     trainer, model, tok = build_trainer(

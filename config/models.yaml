@@ -55,15 +55,19 @@ backends:
     prompt_caching: true         # OpenAI auto-caches long shared prefixes
     rps: 12
 
-  # ---- Local: fine-tuned Qwen-14B QLoRA pilot (Phase 2, CLOUD) -----------
+  # ---- Local: fine-tuned 14B LoRA pilot (Phase 2, CLOUD A100 80GB) -------
+  # base_model MUST match config/training.yaml's base_model (adapter loaded
+  # onto a different base silently produces garbage predictions).
   local:
     type: local_model            # -> harness/backends/local_model.py
-    base_model: Qwen/Qwen2.5-14B-Instruct
-    adapter_path: ""             # set to trained QLoRA adapter dir at P2.4
+    base_model: Qwen/Qwen3-14B   # == training.yaml base_model
+    adapter_path: ""             # set to trained LoRA adapter dir at P2.4
     max_new_tokens: 256
-    temperature: 0.0
-    dtype: bfloat16
-    load_in_4bit: true
+    max_seq_length: 4096
+    win_chars: 8000              # MUST match prepare_train --win-chars
+    overlap_chars: 2000
+    gen_batch_size: 8
+    load_in_4bit: false          # adapter is trained bf16 — eval bf16 too
 
   # ---- TEMPLATE: fine-tune ANY other model = copy this block + one train cmd.
   # 1. train:  python -m training.train_qlora --base-model <hf-id> --output-dir outputs/<name>

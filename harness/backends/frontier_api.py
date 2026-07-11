@@ -27,7 +27,10 @@ import requests
 from .. import prompt as P
 from .base import Backend, ContractResult, Question, Usage, _env
 
-_TIMEOUT = 120
+# generous read timeout: retrying a timed-out POST can DOUBLE-BILL (the server
+# may finish + bill the first attempt after the client gives up), so prefer
+# waiting longer over retrying sooner.
+_TIMEOUT = (10, 300)   # (connect, read) seconds
 _MAX_RETRIES = 6
 _RETRYABLE = (408, 409, 425, 429, 500, 502, 503, 504, 529)
 
@@ -64,8 +67,15 @@ def _post_with_retries(url: str, headers: dict, body: dict) -> dict:
                 continue
             # non-retryable (e.g. 400 bad request, 401 auth) -> fail fast & loud
             raise RuntimeError(f"HTTP {r.status_code} (non-retryable): {r.text[:500]}")
-        except requests.RequestException as e:  # network/timeout error
+        except requests.ConnectionError as e:  # request likely never delivered
             last = str(e)
+            time.sleep(_backoff(attempt))
+        except requests.RequestException as e:  # timeout AFTER send: the server
+            # may still complete and bill the abandoned attempt — make the
+            # possible double-charge visible instead of silent.
+            last = str(e)
+            print(f"      ! timeout after send ({type(e).__name__}); retrying — "
+                  "abandoned attempt may still be billed server-side")
             time.sleep(_backoff(attempt))
     raise RuntimeError(f"request failed after {_MAX_RETRIES} retries: {last}")
 
