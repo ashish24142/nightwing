@@ -94,7 +94,7 @@ def main() -> None:
             band = "YELLOW"
         else:
             band = "RED"
-        md.append(f"## Signal band (CLAUDE.md §7, fixed thresholds): **{band}**\n")
+        md.append(f"## Signal band (pre-committed thresholds): **{band}**\n")
         md.append("*Presented for the human funding decision — not auto-acted on. "
                   "A RED result is still a successful pilot outcome.*")
         result.update({"pilot": pilot_name, "wins": wins, "matches": matches,
