@@ -65,17 +65,21 @@ backends:
     dtype: bfloat16
     load_in_4bit: true
 
-  # ---- Local SECONDARY experiment: 3B on the 12GB laptop GPU (NOT the pilot)
-  local3b:
-    type: local_model
-    base_model: Qwen/Qwen2.5-3B-Instruct
-    adapter_path: outputs/local3b/final_adapter
-    max_new_tokens: 128
-    max_seq_length: 2048
-    win_chars: 4000            # MUST match prepare_train --win-chars for this run
-    overlap_chars: 800
-    gen_batch_size: 8
-    load_in_4bit: false
+  # ---- TEMPLATE: fine-tune ANY other model = copy this block + one train cmd.
+  # 1. train:  python -m training.train_qlora --base-model <hf-id> --output-dir outputs/<name>
+  # 2. copy this block, set base_model + adapter_path, pick a backend name
+  # 3. eval:   python -m harness.run_eval --backend <name> --split dev   (then test ONCE)
+  # Data prep, chat template, logprob confidence all adapt to the model automatically.
+  # local_mymodel:
+  #   type: local_model
+  #   base_model: <hf-model-id>                  # e.g. meta-llama/Llama-3.1-8B-Instruct
+  #   adapter_path: outputs/<name>/final_adapter # or a checkpoint-N dir
+  #   max_new_tokens: 256
+  #   max_seq_length: 4096                       # window chars must fit: ~2.85 chars/token
+  #   win_chars: 8000                            # MUST match prepare_train --win-chars
+  #   overlap_chars: 2000
+  #   gen_batch_size: 8
+  #   load_in_4bit: false                        # bf16 LoRA on 80GB; true for QLoRA
 
 # ---- Cost rates ($ per 1M tokens) for cost_tracker.py ----------------------
 # NOTE: Azure pricing may differ from list pricing — verify against the Azure

@@ -68,6 +68,24 @@ uses a dev split carved from train; the metric is the unmodified official CUAD
 scorer (never reimplemented); local-model confidence comes from token logprobs
 (a real PR curve, not self-reported numbers).
 
+## Fine-tune a different model (3 steps)
+
+The pipeline is model-agnostic — data prep, chat templating, and logprob
+confidence adapt to any HF causal LM automatically:
+
+```bash
+# 1. train (any HF model id)
+python -m training.train_qlora --base-model meta-llama/Llama-3.1-8B-Instruct \
+    --output-dir outputs/llama8b
+# 2. add a backend entry in config/models.yaml (copy the commented template)
+# 3. evaluate on the identical harness/metric
+python -m harness.run_eval --backend local_llama8b --split dev    # select checkpoint
+python -m harness.run_eval --backend local_llama8b --split test   # final, ONCE
+```
+
+Only constraint: the window size (`win_chars`, set at data prep) must fit the
+model's `max_seq_length` (~2.85 chars/token + room for prompt and answer).
+
 ## Why N contracts of smoke first?
 
 Frontier runs cost real money and long runs die (spot GPUs, rate limits,
