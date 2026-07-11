@@ -17,7 +17,7 @@ Config (config/models.yaml backends.local):
 from __future__ import annotations
 
 from .. import prompt as P
-from ..windowing import iter_windows
+from ..windowing import DEFAULT_OVERLAP_CHARS, DEFAULT_WIN_CHARS, iter_windows
 from .base import Backend, ContractResult, Question, Usage
 
 
@@ -27,8 +27,8 @@ class LocalBackend(Backend):
         self.base_model = cfg["base_model"]
         self.adapter_path = cfg.get("adapter_path", "")
         self.max_new_tokens = int(cfg.get("max_new_tokens", 256))
-        self.win_chars = int(cfg.get("win_chars", 8000))
-        self.overlap_chars = int(cfg.get("overlap_chars", 2000))
+        self.win_chars = int(cfg.get("win_chars", DEFAULT_WIN_CHARS))
+        self.overlap_chars = int(cfg.get("overlap_chars", DEFAULT_OVERLAP_CHARS))
         self.gen_batch_size = int(cfg.get("gen_batch_size", 8))
         self.model_id = f"local:{self.base_model.split('/')[-1]}"
         if self.adapter_path:

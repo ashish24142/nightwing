@@ -26,7 +26,8 @@ import re
 from pathlib import Path
 
 from harness import prompt as P
-from harness.windowing import iter_windows, spans_in_window
+from harness.windowing import (DEFAULT_OVERLAP_CHARS, DEFAULT_WIN_CHARS,
+                               iter_windows, spans_in_window)
 
 DATA_DIR = Path(__file__).resolve().parent / "cuad"
 CATEGORY_RE = re.compile(r'related to "(.*?)"')
@@ -64,8 +65,8 @@ def main() -> None:
                     help="max negative windows kept per positive (per contract-question)")
     ap.add_argument("--max-examples", type=int, default=40000,
                     help="hard cap on total examples (pilot-sized)")
-    ap.add_argument("--win-chars", type=int, default=8000)
-    ap.add_argument("--overlap-chars", type=int, default=2000)
+    ap.add_argument("--win-chars", type=int, default=DEFAULT_WIN_CHARS)
+    ap.add_argument("--overlap-chars", type=int, default=DEFAULT_OVERLAP_CHARS)
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--out", default=str(DATA_DIR / "train_instruct.jsonl"))
     ap.add_argument("--dev-contracts", type=int, default=40,

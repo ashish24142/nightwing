@@ -75,15 +75,13 @@ def load_config(path: str | Path = CONFIG_PATH) -> dict:
     return cfg
 
 
-def _env(name_key: str, cfg: dict, required: bool = True) -> str | None:
+def _env(name_key: str, cfg: dict) -> str:
     """Resolve a value whose env-var NAME is stored under cfg[name_key]."""
     env_name = cfg.get(name_key)
     if not env_name:
-        if required:
-            raise KeyError(f"config missing '{name_key}'")
-        return None
+        raise KeyError(f"config missing '{name_key}'")
     val = os.environ.get(env_name)
-    if required and not val:
+    if not val:
         raise EnvironmentError(
             f"environment variable {env_name} (for {name_key}) is not set — "
             f"check your .env"

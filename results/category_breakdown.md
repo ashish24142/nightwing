@@ -63,22 +63,3 @@ Overall AUPR — **claude-opus-4-8** 0.561 · **claude-opus-4-6** 0.498 · **gpt
 | Document Name | 0.887 | 0.839 | 0.471 | **0.887** | 0.732 |
 | Governing Law | 0.924 | 0.823 | 0.899 | **0.924** | 0.882 |
 | Parties | 0.954 | 0.926 | 0.892 | **0.954** | 0.924 |
-
-## Interpretation
-
-Under this extractive-QA harness the frontier models are far from perfect on CUAD —
-best overall AUPR is **0.561 (Claude Opus 4.8)**, ahead of Claude 4.6 (0.498) and
-GPT-5.2 (0.423) — and their weakness is highly uneven across categories. A cluster
-sits near the floor: **Volume Restriction (best 0.038)**, **Post-Termination
-Services (0.103)**, and the two date fields **Effective Date / Agreement Date
-(0.105 / 0.168)**. The date fields are likely depressed by strict span/Jaccard
-matching against short, format-sensitive answers; the rare long-tail clauses
-(Volume Restriction, Minimum Commitment) by their scarcity. These ten weakest
-categories — where even the best frontier model scores **≤ 0.40 AUPR** — are where a
-fine-tuned 14B specialist has the most room to compete or win in Phase 2: the bar is
-low, and a model trained on CUAD's own labelling conventions may reproduce its
-exact-span style better than a general frontier model. Caveat: the harness is
-deliberately conservative (single confidence per answer → coarse PR curves, P@80/90
-= 0 everywhere), so absolute AUPR should be read as an **internally-consistent
-cross-model comparison**, not a published-leaderboard number. The Phase-2 pilot runs
-through this identical harness, so the Green/Yellow/Red gap remains apples-to-apples.

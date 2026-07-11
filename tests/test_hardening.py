@@ -70,7 +70,7 @@ def test_parse():
 # 2. windowing — edges
 # ---------------------------------------------------------------------------
 def test_windowing():
-    check("empty text -> one empty window", W.iter_windows("") == [W.Window(0, 0, "")])
+    check("empty text -> no windows", W.iter_windows("") == [])
     short = W.iter_windows("abc", 100, 10)
     check("short text -> single window", len(short) == 1 and short[0].text == "abc")
     text = "x" * 25000

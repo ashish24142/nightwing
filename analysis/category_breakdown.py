@@ -20,7 +20,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 BASE = ROOT / "results" / "baselines"
-DEGENERATE = {"Price Restrictions"}  # 0 positives in test -> not scorable
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from harness.scoring import DEGENERATE_CATEGORIES as DEGENERATE
 
 # the three frontier baselines (label -> file)
 BASELINES = {

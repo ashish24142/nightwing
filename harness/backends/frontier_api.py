@@ -103,7 +103,7 @@ class FrontierBackend(Backend):
             self.anthropic_version = cfg.get("anthropic_version", "2023-06-01")
         elif self.provider == "azure_openai_responses":
             self.max_output_tokens = int(cfg.get("max_output_tokens", 2048))
-            self.api_version = os.environ[cfg["api_version_env"]]
+            self.api_version = _env("api_version_env", cfg)
         else:
             raise ValueError(f"unknown frontier provider '{self.provider}'")
 
@@ -143,6 +143,10 @@ class FrontierBackend(Backend):
         if self.temperature is not None:
             body["temperature"] = self.temperature
         data = _post_with_retries(url, headers, body)
+        if data.get("stop_reason") == "max_tokens":
+            # truncated mid-answer -> unusable JSON; raise so it's COUNTED as a
+            # question error instead of silently scored as "absent"
+            raise RuntimeError("output truncated at max_tokens")
         content = data.get("content") or []
         text = "".join(
             b.get("text", "") for b in content
@@ -172,6 +176,12 @@ class FrontierBackend(Backend):
             "max_output_tokens": self.max_output_tokens,
         }
         data = _post_with_retries(url, headers, body)
+        status = data.get("status")
+        if status and status != "completed":
+            # incomplete (reasoning ate max_output_tokens) or filtered — raise so
+            # it's COUNTED as a question error, never a silent confident "absent"
+            reason = (data.get("incomplete_details") or {}).get("reason", "")
+            raise RuntimeError(f"response status={status} {reason}".strip())
         text = data.get("output_text") or ""
         if not text:
             for item in (data.get("output") or []):
@@ -180,9 +190,8 @@ class FrontierBackend(Backend):
                 for c in (item.get("content") or []):
                     if isinstance(c, dict) and c.get("type") == "output_text":
                         text += c.get("text", "") or ""
-        # NOTE: empty text can mean a content-filter block or status="incomplete"
-        # (reasoning consumed max_output_tokens). Either way -> parses to "absent",
-        # a safe degradation; the run still completes and is scoreable.
+        if not text:
+            raise RuntimeError("empty completed response (content filter?)")
         u = data.get("usage") or {}
         cached = int((u.get("input_tokens_details") or {}).get("cached_tokens", 0) or 0)
         usage = Usage(

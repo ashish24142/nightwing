@@ -73,6 +73,8 @@ def main() -> None:
     ap.add_argument("--out", default=None, help="output JSON path override")
     args = ap.parse_args()
 
+    if args.limit is not None and args.limit < 1:
+        ap.error("--limit must be >= 1 (0/negative would silently run the FULL split)")
     args.workers = max(1, min(args.workers, 32))  # clamp to a sane range
     config = load_config()
     backend_name = args.backend or config["active"]
@@ -121,6 +123,12 @@ def main() -> None:
                 except (json.JSONDecodeError, KeyError, TypeError):
                     bad += 1
                     continue
+                ck_model = rec.get("model_id")
+                if ck_model and ck_model != backend.model_id:
+                    raise SystemExit(
+                        f"ABORT: checkpoint {ckpt_path.name} was written by "
+                        f"model '{ck_model}' but this run uses '{backend.model_id}'"
+                        " — delete the checkpoint or fix the config.")
                 done_titles.add(title)
                 nbest.update(nb)
                 ct.add(u.get("input_tokens", 0), u.get("cache_write_tokens", 0),
@@ -160,7 +168,8 @@ def main() -> None:
             ct.add(r.usage.input_tokens, r.usage.cache_write_tokens,
                    r.usage.cache_read_tokens, r.usage.output_tokens)
             with open(ckpt_path, "a", encoding="utf-8") as f:
-                f.write(json.dumps({"title": title, "nbest": r.nbest, "usage": {
+                f.write(json.dumps({"title": title, "model_id": backend.model_id,
+                                    "nbest": r.nbest, "usage": {
                     "input_tokens": r.usage.input_tokens,
                     "cache_write_tokens": r.usage.cache_write_tokens,
                     "cache_read_tokens": r.usage.cache_read_tokens,
@@ -218,7 +227,9 @@ def main() -> None:
 
     # -- cost summary + extrapolation --
     cost = ct.summary()
-    per_contract = ct.per_unit(n)
+    # divide by contracts that CONTRIBUTED cost (resumed + succeeded), not all
+    # loaded — failed contracts book no usage and would deflate the estimate
+    per_contract = ct.per_unit(state["done"])
     extrapolated_full = round(per_contract * FULL_TEST_CONTRACTS, 2)
 
     result = {
@@ -272,7 +283,7 @@ def main() -> None:
           f"cache_w={cost['cache_write_tokens']} cache_r={cost['cache_read_tokens']} "
           f"out={cost['output_tokens']}, cache_hit={cost['cache_hit_rate']:.0%})")
     print(f"  per-contract: ${per_contract:.4f}")
-    if not cost["pricing_known"]:
+    if not cost["pricing_known"] and not is_local:
         print("  WARNING: pricing for this model_id not in models.yaml -> $ is 0; add it.")
     if is_smoke:
         print(f"  >>> EXTRAPOLATED full {FULL_TEST_CONTRACTS}-contract cost: "

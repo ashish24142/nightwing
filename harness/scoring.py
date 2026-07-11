@@ -34,6 +34,15 @@ _HERE = Path(__file__).resolve().parent
 _OFFICIAL_PATH = _HERE / "cuad_official_evaluate.py"
 CATEGORY_RE = re.compile(r'related to "(.*?)"')
 
+# categories with ZERO positive gold answers in the test split have an
+# undefined PR curve -> excluded from every per-category comparison
+DEGENERATE_CATEGORIES = {"Price Restrictions"}
+
+
+def qid_category(qid: str) -> str:
+    """Category name embedded in a CUAD qid: '<title>__<Category>_<idx>'."""
+    return re.sub(r"_\d+$", "", qid.split("__", 1)[1])
+
 
 @contextlib.contextmanager
 def _cwd(path: Path):
@@ -129,8 +138,7 @@ def score_per_category(pred_nbest: dict, gt_dict: dict,
     """Per-category AUPR/prec@recall. The official compute_precision_recall
     filters qids by `category in qid`, so we pass each category name through."""
     if category_names is None:
-        # derive from qids: '<title>__<Category>_<idx>'
-        cats = sorted({re.sub(r"_\d+$", "", k.split("__", 1)[1]) for k in gt_dict})
+        cats = sorted({qid_category(k) for k in gt_dict})
     else:
         cats = category_names
     return {c: _score(pred_nbest, gt_dict, category=c) for c in cats}
@@ -167,7 +175,7 @@ def _selfcheck(test_json_path: str) -> None:
     per = score_per_category(pred, gt, cats)
     positives = {c: 0 for c in cats}
     for qid, ans in gt.items():
-        c = re.sub(r"_\d+$", "", qid.split("__", 1)[1])
+        c = qid_category(qid)
         if ans and c in positives:
             positives[c] += 1
     no_positives = sorted(c for c in cats if positives[c] == 0)

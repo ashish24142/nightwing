@@ -29,11 +29,15 @@ class Window:
 
 def iter_windows(text: str, win_chars: int = DEFAULT_WIN_CHARS,
                  overlap_chars: int = DEFAULT_OVERLAP_CHARS) -> list[Window]:
-    """Overlapping char windows covering `text`. Overlap avoids splitting a
-    gold span across a window boundary so it never falls in any window."""
+    """Overlapping char windows covering `text` ([] for empty text).
+    Overlap REDUCES the chance a gold span straddles a boundary; spans longer
+    than overlap_chars can still fall outside every window (rare in CUAD but
+    nonzero) — prepare_train counts them as unrecoverable for that window size."""
     if win_chars <= overlap_chars:
         raise ValueError("win_chars must exceed overlap_chars")
     n = len(text)
+    if n == 0:
+        return []
     if n <= win_chars:
         return [Window(0, n, text)]
     step = win_chars - overlap_chars

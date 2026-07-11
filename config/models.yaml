@@ -62,7 +62,7 @@ backends:
     type: local_model            # -> harness/backends/local_model.py
     base_model: Qwen/Qwen3-14B   # == training.yaml base_model
     adapter_path: ""             # set to trained LoRA adapter dir at P2.4
-    max_new_tokens: 256
+    max_new_tokens: 1024         # same output budget as frontier max_tokens (fairness)
     max_seq_length: 4096
     win_chars: 8000              # MUST match prepare_train --win-chars
     overlap_chars: 2000

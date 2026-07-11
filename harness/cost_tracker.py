@@ -7,7 +7,7 @@ $700 project-spend alert (rule #4) survives across runs.
 
 Usage:
     ct = CostTracker(model_id="claude-opus-4-6", pricing=cfg_pricing)
-    ct.add(input_tokens=..., cached_input_tokens=..., output_tokens=...)
+    ct.add(input_tokens=..., cache_write_tokens=..., cache_read_tokens=..., output_tokens=...)
     ct.summary()                      # dict for this run
     ct.commit_to_ledger(run_label)    # append to results/cost_log.json, check $700
 """
@@ -116,6 +116,9 @@ class CostTracker:
                         pass
                     ledger = {"runs": [], "cumulative_usd": 0.0}
             entry = {"run": run_label, **self.summary()}
+            # same-label re-run (resume/retry) REPLACES its entry — appending
+            # would double-book the replayed checkpoint usage on every retry
+            ledger["runs"] = [r for r in ledger["runs"] if r.get("run") != run_label]
             ledger["runs"].append(entry)
             ledger["cumulative_usd"] = round(
                 sum(r.get("cost_usd", 0.0) for r in ledger["runs"]), 4

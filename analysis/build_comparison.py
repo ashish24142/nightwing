@@ -15,11 +15,25 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from harness.scoring import DEGENERATE_CATEGORIES as DEGENERATE
+
 ROOT = Path(__file__).resolve().parent.parent
 BASE_DIR = ROOT / "results" / "baselines"
 PILOT_DIR = ROOT / "results" / "pilot"
-DEGENERATE = {"Price Restrictions"}   # 0 positives in test -> AUPR undefined
 MATCH_MARGIN = 0.02                   # "matches frontier" = within 2 AUPR pts
+
+# Fixed pre-committed bands. The brief's wording, quoted, with the numeric
+# interpretation used here (chosen BEFORE pilot results exist; do not tune):
+#   GREEN  "within 3-4 pts of frontier overall, OR beats frontier in a
+#           meaningful number of individual categories" -> gap >= -4 OR wins >= GREEN_WINS
+#   YELLOW "5-8 pts below frontier overall, but strong in specific categories"
+#           -> gap >= -8 AND (>=1 win or >=YELLOW_MATCHES matches)
+GREEN_GAP_PTS = -4.0
+GREEN_WINS = 5
+YELLOW_GAP_PTS = -8.0
+YELLOW_MATCHES = 3
 
 
 def _load_results(d: Path) -> dict[str, dict]:
@@ -87,10 +101,10 @@ def main() -> None:
         md.append(f"\n**Pilot wins {len(wins)} categories, matches {len(matches)} "
                   f"(±{MATCH_MARGIN*100:.0f} pts). Overall gap: {gap_pts:+.1f} AUPR pts.**\n")
 
-        # fixed §7 bands (presented for the HUMAN decision)
-        if gap_pts >= -4 or len(wins) >= 5:
+        # fixed pre-committed bands (presented for the HUMAN decision)
+        if gap_pts >= GREEN_GAP_PTS or len(wins) >= GREEN_WINS:
             band = "GREEN"
-        elif gap_pts >= -8 and wins:
+        elif gap_pts >= YELLOW_GAP_PTS and (wins or len(matches) >= YELLOW_MATCHES):
             band = "YELLOW"
         else:
             band = "RED"
