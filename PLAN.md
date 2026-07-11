@@ -70,7 +70,7 @@ JSONs (auditability differentiator).
 
 ## Phased execution
 
-### Phase A — free, no GPU (Claude Code does now)
+### Phase A — free, no GPU
 1. **Fix confidence granularity** — P@80/90 = 0 everywhere is the credibility hole:
    single per-answer confidence → coarse PR curve. Move to graded confidence so the
    official prec-at-recall sweep is meaningful. Re-score existing frontier
@@ -111,7 +111,7 @@ published win or lose.
 Spent $493.89 of $1,000. Phase B needs ~$15–40 GPU (scaling story +$15).
 Everything else is free. Total stays well under cap.
 
-## Honest-result policy (unchanged from CLAUDE.md)
+## Honest-result policy (unchanged from the pre-committed pilot brief)
 
 If the 14B lands RED (>8–10 pts below frontier), we publish anyway — as an honest
 negative result with the cost analysis ("what $10 of fine-tuning does NOT get you").

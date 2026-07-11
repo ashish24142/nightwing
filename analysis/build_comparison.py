@@ -4,7 +4,7 @@ build_comparison.py — P2.5 (nightwing): pilot vs frontier, overall + per-categ
 Reads every result JSON in results/baselines/ (frontier) and results/pilot/
 (fine-tuned models), builds the comparison table, flags categories where the
 pilot wins/matches (within 2 AUPR pts), computes gap-to-frontier, and classifies
-the headline result against the FIXED Green/Yellow/Red bands (CLAUDE.md §7).
+the headline result against the FIXED, pre-committed Green/Yellow/Red bands.
 The classification is surfaced for a HUMAN decision — never auto-acted on.
 
 Run:  python -m analysis.build_comparison

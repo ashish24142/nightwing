@@ -35,8 +35,6 @@ env/
 .DS_Store
 Thumbs.db
 
-# --- Local machine settings ---
-.claude/settings.local.json
 
 # --- Allow small committed results ---
 !results/**/*.json

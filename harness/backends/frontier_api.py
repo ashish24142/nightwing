@@ -9,7 +9,7 @@ Validated wire formats (see creds smoke test):
                              header api-key. Prompt caching is automatic on the
                              identical leading prefix (system+contract).
 
-Cost saver (CLAUDE.md §3): the contract is the bulk of the tokens; we put it in
+Cost saver: the contract is the bulk of the tokens; we put it in
 the cached prefix and vary only the ~per-question suffix across all 41 calls.
 
 Implemented with `requests` (exact validated shapes) rather than the vendor SDKs
