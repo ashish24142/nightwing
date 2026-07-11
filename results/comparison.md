@@ -1,4 +1,4 @@
-# ContractLM — pilot vs frontier (official CUAD AUPR, full test split)
+# nightwing — pilot vs frontier (official CUAD AUPR, full test split)
 
 ## Overall
 

@@ -1,4 +1,6 @@
-# ContractLM
+# nightwing
+
+*The sidekick that trained up.*
 
 **Can a fine-tuned open 14B model match frontier LLMs on contract clause extraction — at ~$0 per contract instead of ~$1.60?**
 
@@ -17,7 +19,7 @@ can be re-scored by anyone.
 | claude-opus-4-8 | **0.561** | ~$165 |
 | claude-opus-4-6 | 0.498 | ~$154 |
 | gpt-5.2 | 0.423 | ~$13 |
-| Qwen3-14B + LoRA *(in progress)* | — | ~$0 after training |
+| nightwing-14b (Qwen3-14B + LoRA) *(in progress)* | — | ~$0 after training |
 
 Per-category breakdown (where frontier is weakest → where a specialist can win):
 [results/category_breakdown.md](results/category_breakdown.md). Raw predictions:

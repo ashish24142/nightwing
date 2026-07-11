@@ -1,4 +1,4 @@
-# ContractLM — Publication Plan (open-source + HuggingFace release)
+# nightwing — Publication Plan (open-source + HuggingFace release)
 
 *Drafted 2026-07-11. Research-backed (HF competition scan, licensing verification,
 signoff-repo style analysis, HF release best practices).*
@@ -25,6 +25,12 @@ a local specialist costs ~$0 after training (~$10 of spot GPU).
 | Qwen2.5-**14B**-Instruct | Apache 2.0 (14B specifically; 3B/72B differ!) | Include license, note modification |
 | Benchmarks vs Claude/GPT/Azure | Permitted | Publish methodology (we do anyway); **never train on frontier outputs** (we don't — CUAD ground truth only) |
 
+## Name
+
+**nightwing** — the sidekick who trained up to match the mentor: a fine-tuned open
+model going head-to-head with frontier. (PyPI free; HF namespace clear of real
+projects; unrelated-industry neighbor: Raytheon's cyber spinoff.)
+
 ## The three artifacts
 
 ### 1. GitHub repo (the signoff-style open-source asset)
@@ -43,8 +49,8 @@ suite · sanitize check (creds never committed; .env gitignored — verify befor
 JSONs (auditability differentiator).
 
 ### 2. HuggingFace release
-- `contractlm-14b-cuad-lora` — **adapter repo** (primary artifact, peft)
-- `contractlm-14b-cuad` — **merged bf16 repo** (needed for vLLM/GGUF users)
+- `nightwing-14b-cuad-lora` — **adapter repo** (primary artifact, peft)
+- `nightwing-14b-cuad` — **merged bf16 repo** (needed for vLLM/GGUF users)
 - optional `-GGUF` repo (Q4_K_M + Q8_0) — signals seriousness
 - Model card: TL;DR → **Evaluation table** (us vs Claude 4.8 0.561 / Claude 4.6
   0.498 / GPT-5.2 0.423 vs published DeBERTa anchor, same metric/split/harness,
@@ -55,7 +61,7 @@ JSONs (auditability differentiator).
   (builds the Model Tree), `datasets: theatticusproject/cuad-qa`
 - **Gradio Space on ZeroGPU** (free H200 slices): paste clause + 41-category
   dropdown + preloaded examples; `models:` metadata cross-links Space ↔ model
-- **HF Collection** "ContractLM" grouping all artifacts
+- **HF Collection** "nightwing" grouping all artifacts
 
 ### 3. Writeup
 - migrationassurance.com article (companion to the signoff one): *"Can a $10

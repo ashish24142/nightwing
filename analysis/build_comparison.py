@@ -1,5 +1,5 @@
 """
-build_comparison.py — P2.5: pilot vs frontier, overall + per-category.
+build_comparison.py — P2.5 (nightwing): pilot vs frontier, overall + per-category.
 
 Reads every result JSON in results/baselines/ (frontier) and results/pilot/
 (fine-tuned models), builds the comparison table, flags categories where the
@@ -42,7 +42,7 @@ def main() -> None:
     cats = sorted({c for r in models.values() for c in r["per_category"]}
                   - DEGENERATE)
 
-    md = ["# ContractLM — pilot vs frontier (official CUAD AUPR, full test split)\n"]
+    md = ["# nightwing — pilot vs frontier (official CUAD AUPR, full test split)\n"]
     md.append("## Overall\n")
     md.append("| Model | AUPR | P@80R | P@90R | gap to best frontier |")
     md.append("|---|---|---|---|---|")
