@@ -1,0 +1,17 @@
+name: ci
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      # offline test suite: no API keys, no GPU, no data download needed
+      - run: pip install pyyaml numpy pandas scikit-learn requests python-dotenv
+      - run: python -m tests.test_hardening

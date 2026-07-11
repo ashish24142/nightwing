@@ -1,0 +1,100 @@
+# ============================================================================
+# models.yaml — THE SWAP POINT (operating rule #3)
+# Switching between a frontier API backend and the local fine-tuned model must
+# be a change HERE ONLY, never a code rewrite. run_eval.py reads `active`.
+#
+# Frontier backends are Azure-hosted (creds in .env). Connectivity confirmed:
+#   - Claude  : Azure AI Foundry Anthropic passthrough, auth header = x-api-key
+#               (anthropic SDK default) -> just override base_url. Caching: YES.
+#   - GPT     : Azure OpenAI *Responses* API, auth header = api-key. Caching: YES.
+# ============================================================================
+
+# Which backend run_eval.py uses. Override on CLI: --backend claude48
+active: claude48
+
+backends:
+  # ---- Frontier: Claude Opus 4.8 via Azure AI Foundry (Phase 1 baseline) --
+  claude48:
+    type: frontier_api          # -> harness/backends/frontier_api.py
+    provider: azure_anthropic   # native Anthropic Messages API, x-api-key header
+    model: claude-opus-4-8                  # deployment name (literal)
+    pricing_model_id: claude-opus-4-8       # key into `pricing:` (API reports this)
+    base_url_env: AZURE_ANTHROPIC_ENDPOINT  # .../anthropic  (appends /v1/messages)
+    api_key_env: AZURE_ANTHROPIC_API_KEY
+    anthropic_version: "2023-06-01"
+    max_tokens: 1024
+    # temperature omitted: deprecated on Opus 4.8 (and dropped on 4.6 for parity)
+    prompt_caching: true         # cache the contract once, vary the 41 questions
+    rps: 12                      # global req/s cap (safety ceiling for parallel workers)
+
+  # ---- Frontier: Claude Opus 4.6 via Azure AI Foundry (Phase 1 baseline) --
+  claude46:
+    type: frontier_api
+    provider: azure_anthropic
+    model: claude-opus-4-6                  # shares endpoint/key with claude48
+    pricing_model_id: claude-opus-4-6
+    base_url_env: AZURE_ANTHROPIC_ENDPOINT
+    api_key_env: AZURE_ANTHROPIC_API_KEY
+    anthropic_version: "2023-06-01"
+    max_tokens: 1024
+    # temperature omitted: deprecated on Opus 4.8 (and dropped on 4.6 for parity)
+    prompt_caching: true
+    rps: 12
+
+  # ---- Frontier: GPT via Azure OpenAI Responses API (Phase 1 baseline) ---
+  gpt:
+    type: frontier_api
+    provider: azure_openai_responses        # POST /openai/responses
+    model_env: AZURE_OPENAI_MODEL           # gpt-5.2
+    pricing_model_id: gpt-5.2               # key into `pricing:`
+    base_url_env: AZURE_OPENAI_ENDPOINT
+    api_version_env: AZURE_OPENAI_API_VERSION   # 2025-04-01-preview
+    api_key_env: AZURE_OPENAI_API_KEY
+    max_output_tokens: 1024
+    # temperature omitted: GPT-5-class reasoning models reject non-default temp
+    prompt_caching: true         # OpenAI auto-caches long shared prefixes
+    rps: 12
+
+  # ---- Local: fine-tuned Qwen-14B QLoRA pilot (Phase 2, CLOUD) -----------
+  local:
+    type: local_model            # -> harness/backends/local_model.py
+    base_model: Qwen/Qwen2.5-14B-Instruct
+    adapter_path: ""             # set to trained QLoRA adapter dir at P2.4
+    max_new_tokens: 256
+    temperature: 0.0
+    dtype: bfloat16
+    load_in_4bit: true
+
+  # ---- Local SECONDARY experiment: 3B on the 12GB laptop GPU (NOT the pilot)
+  local3b:
+    type: local_model
+    base_model: Qwen/Qwen2.5-3B-Instruct
+    adapter_path: outputs/local3b/final_adapter
+    max_new_tokens: 128
+    max_seq_length: 2048
+    win_chars: 4000            # MUST match prepare_train --win-chars for this run
+    overlap_chars: 800
+    gen_batch_size: 8
+    load_in_4bit: false
+
+# ---- Cost rates ($ per 1M tokens) for cost_tracker.py ----------------------
+# NOTE: Azure pricing may differ from list pricing — verify against the Azure
+# resource's billing before each full run. Keys must match the model id the
+# pricing lookup uses (see pricing_model_id in each backend below).
+# cache_write ~1.25x input (Anthropic); cache_read ~0.1x input.
+pricing:
+  claude-opus-4-8:
+    input: 15.00
+    cache_write: 18.75
+    cache_read: 1.50            # ~90% off on cache hits
+    output: 75.00
+  claude-opus-4-6:
+    input: 15.00
+    cache_write: 18.75
+    cache_read: 1.50
+    output: 75.00
+  gpt-5.2:
+    input: 1.25
+    cache_write: 1.25          # OpenAI: no separate cache-write charge
+    cache_read: 0.125
+    output: 10.00

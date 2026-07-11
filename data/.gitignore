@@ -1,0 +1,5 @@
+# Do NOT commit raw CUAD data or any derived large files.
+# Only code (download_cuad.py, prepare_train.py, verify_split.py) is tracked here.
+*
+!.gitignore
+!*.py

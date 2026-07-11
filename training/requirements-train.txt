@@ -1,0 +1,17 @@
+# Phase 2 TRAINING dependencies — install on the Linux spot GPU box ONLY.
+# (A100 80GB / H100, CUDA 12.x). Do NOT install on the Windows harness box.
+#
+# Recommended: follow Unsloth's official install for your CUDA version, then:
+#   pip install -r training/requirements-train.txt
+#
+# Pins are indicative; align torch with the box's CUDA driver.
+unsloth                     # fastest single-GPU QLoRA
+torch                       # install the CUDA build matching the box
+transformers>=4.48.0
+peft>=0.14.0
+trl>=0.13.0
+bitsandbytes>=0.45.0
+accelerate>=1.2.0
+datasets==3.2.0
+pyyaml==6.0.2
+wandb                       # optional experiment tracking (free tier)

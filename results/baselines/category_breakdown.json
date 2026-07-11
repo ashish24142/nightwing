@@ -1,0 +1,470 @@
+{
+  "models": [
+    "claude-opus-4-8",
+    "claude-opus-4-6",
+    "gpt-5.2"
+  ],
+  "overall": {
+    "claude-opus-4-8": 0.5612734336090937,
+    "claude-opus-4-6": 0.4981457201666443,
+    "gpt-5.2": 0.422877939458047
+  },
+  "n_categories_scored": 40,
+  "excluded": [
+    "Price Restrictions"
+  ],
+  "categories": [
+    {
+      "category": "Volume Restriction",
+      "aupr": {
+        "claude-opus-4-8": 0.014285714285714285,
+        "claude-opus-4-6": 0.016664585414585414,
+        "gpt-5.2": 0.03827215096564942
+      },
+      "frontier_best": 0.038,
+      "frontier_best_model": "gpt-5.2",
+      "frontier_mean": 0.023
+    },
+    {
+      "category": "Post-Termination Services",
+      "aupr": {
+        "claude-opus-4-8": 0.10349694952558557,
+        "claude-opus-4-6": 0.07320768662232077,
+        "gpt-5.2": 0.034843143506573415
+      },
+      "frontier_best": 0.103,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.071
+    },
+    {
+      "category": "Effective Date",
+      "aupr": {
+        "claude-opus-4-8": 0.08448431091873715,
+        "claude-opus-4-6": 0.10452784044985997,
+        "gpt-5.2": 0.06983760071207358
+      },
+      "frontier_best": 0.105,
+      "frontier_best_model": "claude-opus-4-6",
+      "frontier_mean": 0.086
+    },
+    {
+      "category": "Agreement Date",
+      "aupr": {
+        "claude-opus-4-8": 0.11677218370013064,
+        "claude-opus-4-6": 0.16765396673574576,
+        "gpt-5.2": 0.05406116210102597
+      },
+      "frontier_best": 0.168,
+      "frontier_best_model": "claude-opus-4-6",
+      "frontier_mean": 0.113
+    },
+    {
+      "category": "Minimum Commitment",
+      "aupr": {
+        "claude-opus-4-8": 0.17183850268089398,
+        "claude-opus-4-6": 0.25650252525252526,
+        "gpt-5.2": 0.15745110116482566
+      },
+      "frontier_best": 0.257,
+      "frontier_best_model": "claude-opus-4-6",
+      "frontier_mean": 0.195
+    },
+    {
+      "category": "Change Of Control",
+      "aupr": {
+        "claude-opus-4-8": 0.33717352092352093,
+        "claude-opus-4-6": 0.22298656924944196,
+        "gpt-5.2": 0.14272840235230433
+      },
+      "frontier_best": 0.337,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.234
+    },
+    {
+      "category": "Ip Ownership Assignment",
+      "aupr": {
+        "claude-opus-4-8": 0.3088565239090347,
+        "claude-opus-4-6": 0.2804347040886823,
+        "gpt-5.2": 0.3507213351331978
+      },
+      "frontier_best": 0.351,
+      "frontier_best_model": "gpt-5.2",
+      "frontier_mean": 0.313
+    },
+    {
+      "category": "Insurance",
+      "aupr": {
+        "claude-opus-4-8": 0.34147645591600573,
+        "claude-opus-4-6": 0.35294806447169025,
+        "gpt-5.2": 0.20391329849980483
+      },
+      "frontier_best": 0.353,
+      "frontier_best_model": "claude-opus-4-6",
+      "frontier_mean": 0.299
+    },
+    {
+      "category": "Non-Disparagement",
+      "aupr": {
+        "claude-opus-4-8": 0.36904761904761907,
+        "claude-opus-4-6": 0.3928571428571429,
+        "gpt-5.2": 0.3425925925925926
+      },
+      "frontier_best": 0.393,
+      "frontier_best_model": "claude-opus-4-6",
+      "frontier_mean": 0.368
+    },
+    {
+      "category": "Warranty Duration",
+      "aupr": {
+        "claude-opus-4-8": 0.40350877192982454,
+        "claude-opus-4-6": 0.3684210526315789,
+        "gpt-5.2": 0.3447368421052631
+      },
+      "frontier_best": 0.404,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.372
+    },
+    {
+      "category": "Affiliate License-Licensor",
+      "aupr": {
+        "claude-opus-4-8": 0.40535714285714286,
+        "claude-opus-4-6": 0.2782967032967033,
+        "gpt-5.2": 0.12327586206896553
+      },
+      "frontier_best": 0.405,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.269
+    },
+    {
+      "category": "Rofr/Rofo/Rofn",
+      "aupr": {
+        "claude-opus-4-8": 0.41060416101924635,
+        "claude-opus-4-6": 0.3562618595825427,
+        "gpt-5.2": 0.3719165085388994
+      },
+      "frontier_best": 0.411,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.38
+    },
+    {
+      "category": "Competitive Restriction Exception",
+      "aupr": {
+        "claude-opus-4-8": 0.414863723562554,
+        "claude-opus-4-6": 0.33479459918139165,
+        "gpt-5.2": 0.22450984897221454
+      },
+      "frontier_best": 0.415,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.325
+    },
+    {
+      "category": "Revenue/Profit Sharing",
+      "aupr": {
+        "claude-opus-4-8": 0.4232658405896034,
+        "claude-opus-4-6": 0.41204626901537444,
+        "gpt-5.2": 0.2804074138013423
+      },
+      "frontier_best": 0.423,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.372
+    },
+    {
+      "category": "Audit Rights",
+      "aupr": {
+        "claude-opus-4-8": 0.44146258878992717,
+        "claude-opus-4-6": 0.2651629072681704,
+        "gpt-5.2": 0.25521048999309864
+      },
+      "frontier_best": 0.441,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.321
+    },
+    {
+      "category": "Exclusivity",
+      "aupr": {
+        "claude-opus-4-8": 0.2955540595937785,
+        "claude-opus-4-6": 0.46503321291650507,
+        "gpt-5.2": 0.40999126331433755
+      },
+      "frontier_best": 0.465,
+      "frontier_best_model": "claude-opus-4-6",
+      "frontier_mean": 0.39
+    },
+    {
+      "category": "Non-Transferable License",
+      "aupr": {
+        "claude-opus-4-8": 0.503487284843217,
+        "claude-opus-4-6": 0.4884156206773308,
+        "gpt-5.2": 0.4468238732548874
+      },
+      "frontier_best": 0.503,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.48
+    },
+    {
+      "category": "Non-Compete",
+      "aupr": {
+        "claude-opus-4-8": 0.5171117930868483,
+        "claude-opus-4-6": 0.3859888315797543,
+        "gpt-5.2": 0.23587894097709083
+      },
+      "frontier_best": 0.517,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.38
+    },
+    {
+      "category": "Unlimited/All-You-Can-Eat-License",
+      "aupr": {
+        "claude-opus-4-8": 0.3333333333333333,
+        "claude-opus-4-6": 0.5198863636363636,
+        "gpt-5.2": 0.1468253968253968
+      },
+      "frontier_best": 0.52,
+      "frontier_best_model": "claude-opus-4-6",
+      "frontier_mean": 0.333
+    },
+    {
+      "category": "Liquidated Damages",
+      "aupr": {
+        "claude-opus-4-8": 0.5022511163176124,
+        "claude-opus-4-6": 0.5205627705627707,
+        "gpt-5.2": 0.31797791580400275
+      },
+      "frontier_best": 0.521,
+      "frontier_best_model": "claude-opus-4-6",
+      "frontier_mean": 0.447
+    },
+    {
+      "category": "Cap On Liability",
+      "aupr": {
+        "claude-opus-4-8": 0.5225459526297387,
+        "claude-opus-4-6": 0.419282190523291,
+        "gpt-5.2": 0.3328888866790891
+      },
+      "frontier_best": 0.523,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.425
+    },
+    {
+      "category": "Joint Ip Ownership",
+      "aupr": {
+        "claude-opus-4-8": 0.5238095238095237,
+        "claude-opus-4-6": 0.5238095238095237,
+        "gpt-5.2": 0.23137973137973136
+      },
+      "frontier_best": 0.524,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.426
+    },
+    {
+      "category": "License Grant",
+      "aupr": {
+        "claude-opus-4-8": 0.5284832822783608,
+        "claude-opus-4-6": 0.4846469259632131,
+        "gpt-5.2": 0.4276671892300458
+      },
+      "frontier_best": 0.528,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.48
+    },
+    {
+      "category": "Uncapped Liability",
+      "aupr": {
+        "claude-opus-4-8": 0.5517632442224834,
+        "claude-opus-4-6": 0.35895182291666666,
+        "gpt-5.2": 0.3494791666666667
+      },
+      "frontier_best": 0.552,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.42
+    },
+    {
+      "category": "Affiliate License-Licensee",
+      "aupr": {
+        "claude-opus-4-8": 0.35036119711042313,
+        "claude-opus-4-6": 0.5572588879606424,
+        "gpt-5.2": 0.4381224801133268
+      },
+      "frontier_best": 0.557,
+      "frontier_best_model": "claude-opus-4-6",
+      "frontier_mean": 0.449
+    },
+    {
+      "category": "No-Solicit Of Customers",
+      "aupr": {
+        "claude-opus-4-8": 0.5012987012987014,
+        "claude-opus-4-6": 0.5733333333333334,
+        "gpt-5.2": 0.28888888888888886
+      },
+      "frontier_best": 0.573,
+      "frontier_best_model": "claude-opus-4-6",
+      "frontier_mean": 0.455
+    },
+    {
+      "category": "Anti-Assignment",
+      "aupr": {
+        "claude-opus-4-8": 0.5812595886476474,
+        "claude-opus-4-6": 0.5555894883053203,
+        "gpt-5.2": 0.43981248366289705
+      },
+      "frontier_best": 0.581,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.526
+    },
+    {
+      "category": "Termination For Convenience",
+      "aupr": {
+        "claude-opus-4-8": 0.6182032825967357,
+        "claude-opus-4-6": 0.5016284799211628,
+        "gpt-5.2": 0.4877369074015415
+      },
+      "frontier_best": 0.618,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.536
+    },
+    {
+      "category": "Covenant Not To Sue",
+      "aupr": {
+        "claude-opus-4-8": 0.6055241624938366,
+        "claude-opus-4-6": 0.641679268670117,
+        "gpt-5.2": 0.46741394931377034
+      },
+      "frontier_best": 0.642,
+      "frontier_best_model": "claude-opus-4-6",
+      "frontier_mean": 0.572
+    },
+    {
+      "category": "Irrevocable Or Perpetual License",
+      "aupr": {
+        "claude-opus-4-8": 0.6589591567852437,
+        "claude-opus-4-6": 0.6161663750168259,
+        "gpt-5.2": 0.5981900214886983
+      },
+      "frontier_best": 0.659,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.624
+    },
+    {
+      "category": "Most Favored Nation",
+      "aupr": {
+        "claude-opus-4-8": 0.6666666666666666,
+        "claude-opus-4-6": 0.6666666666666666,
+        "gpt-5.2": 0.6666666666666666
+      },
+      "frontier_best": 0.667,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.667
+    },
+    {
+      "category": "Third Party Beneficiary",
+      "aupr": {
+        "claude-opus-4-8": 0.6953364817001182,
+        "claude-opus-4-6": 0.5212904103569065,
+        "gpt-5.2": 0.3545155502392344
+      },
+      "frontier_best": 0.695,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.524
+    },
+    {
+      "category": "Expiration Date",
+      "aupr": {
+        "claude-opus-4-8": 0.708481758964048,
+        "claude-opus-4-6": 0.6760315955035768,
+        "gpt-5.2": 0.5891403615253215
+      },
+      "frontier_best": 0.708,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.658
+    },
+    {
+      "category": "No-Solicit Of Employees",
+      "aupr": {
+        "claude-opus-4-8": 0.6607638888888888,
+        "claude-opus-4-6": 0.7666666666666666,
+        "gpt-5.2": 0.6258708611649788
+      },
+      "frontier_best": 0.767,
+      "frontier_best_model": "claude-opus-4-6",
+      "frontier_mean": 0.684
+    },
+    {
+      "category": "Renewal Term",
+      "aupr": {
+        "claude-opus-4-8": 0.7829750317813442,
+        "claude-opus-4-6": 0.6905535471511556,
+        "gpt-5.2": 0.5925018687827037
+      },
+      "frontier_best": 0.783,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.689
+    },
+    {
+      "category": "Notice Period To Terminate Renewal",
+      "aupr": {
+        "claude-opus-4-8": 0.6806267806267806,
+        "claude-opus-4-6": 0.6768518518518518,
+        "gpt-5.2": 0.799558080808081
+      },
+      "frontier_best": 0.8,
+      "frontier_best_model": "gpt-5.2",
+      "frontier_mean": 0.719
+    },
+    {
+      "category": "Source Code Escrow",
+      "aupr": {
+        "claude-opus-4-8": 0.6,
+        "claude-opus-4-6": 0.8,
+        "gpt-5.2": 0.8
+      },
+      "frontier_best": 0.8,
+      "frontier_best_model": "claude-opus-4-6",
+      "frontier_mean": 0.733
+    },
+    {
+      "category": "Document Name",
+      "aupr": {
+        "claude-opus-4-8": 0.8869182600362664,
+        "claude-opus-4-6": 0.8389577143489717,
+        "gpt-5.2": 0.4708087308238955
+      },
+      "frontier_best": 0.887,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.732
+    },
+    {
+      "category": "Governing Law",
+      "aupr": {
+        "claude-opus-4-8": 0.9242921829128726,
+        "claude-opus-4-6": 0.8226713669115191,
+        "gpt-5.2": 0.8985924353409998
+      },
+      "frontier_best": 0.924,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.882
+    },
+    {
+      "category": "Parties",
+      "aupr": {
+        "claude-opus-4-8": 0.9538813395475239,
+        "claude-opus-4-6": 0.9258669486723451,
+        "gpt-5.2": 0.8924380036182749
+      },
+      "frontier_best": 0.954,
+      "frontier_best_model": "claude-opus-4-8",
+      "frontier_mean": 0.924
+    }
+  ],
+  "top10_winnable": [
+    "Volume Restriction",
+    "Post-Termination Services",
+    "Effective Date",
+    "Agreement Date",
+    "Minimum Commitment",
+    "Change Of Control",
+    "Ip Ownership Assignment",
+    "Insurance",
+    "Non-Disparagement",
+    "Warranty Duration"
+  ]
+}

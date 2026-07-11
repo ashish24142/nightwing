@@ -1,0 +1,23 @@
+# ContractLM Pilot — Python 3.11
+# ---------------------------------------------------------------------------
+# HARNESS + FRONTIER EVAL (runs on this Windows box / any CPU machine).
+# Install with:  pip install -r requirements.txt
+# ---------------------------------------------------------------------------
+anthropic==0.40.0          # Claude frontier backend (prompt caching)
+openai==1.59.6             # GPT frontier backend
+datasets==3.2.0            # HuggingFace CUAD loader (theatticusproject/cuad-qa)
+huggingface-hub==0.27.1
+pyyaml==6.0.2              # config/models.yaml, config/training.yaml
+numpy==2.2.1
+pandas==2.2.3
+tqdm==4.67.1
+tenacity==9.0.0           # API retry/backoff
+python-dotenv==1.0.1      # load API keys from .env (never committed)
+scikit-learn==1.6.1       # AUPR / precision-recall for official-metric scoring
+
+# ---------------------------------------------------------------------------
+# TRAINING (Phase 2) — installed SEPARATELY on the Linux spot GPU box, NOT here.
+# These wheels are CUDA/Linux-specific and will not install on Windows CPU.
+# See training/requirements-train.txt and README "GPU setup".
+#   unsloth, torch (cuda), transformers, peft, trl, bitsandbytes, accelerate
+# ---------------------------------------------------------------------------

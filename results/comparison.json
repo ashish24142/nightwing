@@ -1,0 +1,20 @@
+{
+  "overall": {
+    "claude-opus-4-6": {
+      "aupr": 0.4981457201666443,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "claude-opus-4-8": {
+      "aupr": 0.5612734336090937,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "gpt-5.2": {
+      "aupr": 0.422877939458047,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    }
+  },
+  "best_frontier_aupr": 0.5612734336090937
+}

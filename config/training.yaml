@@ -1,0 +1,42 @@
+# ============================================================================
+# training.yaml — LoRA hyperparameters for the 14B fine-tune (A100 80GB spot).
+# Agreed config (PLAN.md Phase B): bf16 LoRA (not QLoRA), train further with
+# best-checkpoint-on-dev selection; test split touched ONCE at the end.
+# Consumed by training/train_qlora.py on the Linux spot GPU box.
+# ============================================================================
+
+base_model: Qwen/Qwen3-14B   # Apache-2.0; fallback Qwen/Qwen2.5-14B-Instruct
+
+# ---- LoRA adapter (bf16 — 80GB fits 14B without 4-bit quantization noise) ----
+load_in_4bit: false
+lora:
+  r: 32
+  alpha: 64
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+# ---- Optimization ----
+max_seq_length: 4096
+epochs: 4                  # train further; select best checkpoint on DEV (never test)
+per_device_batch_size: 2
+gradient_accumulation_steps: 8   # effective batch = 16
+learning_rate: 2.0e-4
+lr_scheduler: cosine
+warmup_ratio: 0.03
+weight_decay: 0.01
+optim: adamw_8bit
+seed: 42
+
+# ---- Checkpointing (spot preemption survival + dev-based selection) ----
+output_dir: outputs/qwen14b-cuad-lora
+save_steps: 250            # each kept checkpoint is a dev-eval candidate
+save_total_limit: 50       # keep ALL candidates; disk is cheap, re-training isn't
+logging_steps: 5
+resume_from_checkpoint: true
+
+# ---- Data ----
+train_file: data/cuad/train_instruct.jsonl   # produced by data/prepare_train.py
+
+# ---- Tracking ----
+report_to: none           # set to "wandb" if using W&B free tier
+run_name: qwen14b-cuad-qlora-pilot

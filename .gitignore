@@ -1,0 +1,51 @@
+# --- Secrets ---
+.env
+.env.*
+*.key
+**/secrets*
+
+# --- Raw data & model weights (NEVER commit) ---
+data/raw/
+data/cuad/
+data/*.json
+data/*.jsonl
+data/*.csv
+data/*.zip
+!data/.gitignore
+*.bin
+*.safetensors
+*.gguf
+*.pt
+*.ckpt
+checkpoints/
+adapters/
+outputs/
+wandb/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+
+# --- Local machine settings ---
+.claude/settings.local.json
+
+# --- Allow small committed results ---
+!results/**/*.json
+!results/**/*.md
+# ...but NOT run checkpoints, logs, or smoke-test prediction dumps.
+# Full-run predictions ARE committed (auditability: anyone can re-score them).
+results/**/*_smoke*_predictions.json
+results/**/*.ckpt.jsonl
+results/**/*.log
+
+# --- Internal planning files (not part of the public release) ---
+ContractLM_Pilot_Plan.xlsx

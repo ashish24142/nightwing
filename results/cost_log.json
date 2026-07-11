@@ -1,0 +1,119 @@
+{
+  "runs": [
+    {
+      "run": "claude48_test_smoke5",
+      "model": "claude-opus-4-8",
+      "calls": 5,
+      "input_tokens": 23555,
+      "cache_write_tokens": 123508,
+      "cache_read_tokens": 4940320,
+      "output_tokens": 20570,
+      "cache_hit_rate": 0.995,
+      "cost_usd": 11.6223,
+      "pricing_known": true
+    },
+    {
+      "run": "claude46_test_smoke5",
+      "model": "claude-opus-4-6",
+      "calls": 5,
+      "input_tokens": 335485,
+      "cache_write_tokens": 76932,
+      "cache_read_tokens": 3077280,
+      "output_tokens": 19788,
+      "cache_hit_rate": 0.904,
+      "cost_usd": 12.5748,
+      "pricing_known": true
+    },
+    {
+      "run": "gpt_test_smoke5",
+      "model": "gpt-5.2",
+      "calls": 5,
+      "input_tokens": 198185,
+      "cache_write_tokens": 0,
+      "cache_read_tokens": 2945280,
+      "output_tokens": 24204,
+      "cache_hit_rate": 0.937,
+      "cost_usd": 0.8579,
+      "pricing_known": true
+    },
+    {
+      "run": "gpt_test_full",
+      "model": "gpt-5.2",
+      "calls": 102,
+      "input_tokens": 3190430,
+      "cache_write_tokens": 0,
+      "cache_read_tokens": 38535168,
+      "output_tokens": 394466,
+      "cache_hit_rate": 0.924,
+      "cost_usd": 12.7496,
+      "pricing_known": true
+    },
+    {
+      "run": "claude48_test_full",
+      "model": "claude-opus-4-8",
+      "calls": 102,
+      "input_tokens": 570558,
+      "cache_write_tokens": 1634986,
+      "cache_read_tokens": 65399440,
+      "output_tokens": 367962,
+      "cache_hit_rate": 0.992,
+      "cost_usd": 164.9107,
+      "pricing_known": true
+    },
+    {
+      "run": "claude46_test_full_CRASHED_89of102_unsaved",
+      "calls": 89,
+      "cost_usd": 136.13,
+      "note": "process killed at 89/102; predictions lost (pre-checkpoint code); money spent at Azure"
+    },
+    {
+      "run": "gpt_test_smoke2",
+      "model": "gpt-5.2",
+      "calls": 2,
+      "input_tokens": 21369,
+      "cache_write_tokens": 0,
+      "cache_read_tokens": 108928,
+      "output_tokens": 2012,
+      "cache_hit_rate": 0.836,
+      "cost_usd": 0.0604,
+      "pricing_known": true
+    },
+    {
+      "run": "gpt_test_smoke4",
+      "model": "gpt-5.2",
+      "calls": 4,
+      "input_tokens": 630290,
+      "cache_write_tokens": 0,
+      "cache_read_tokens": 2457088,
+      "output_tokens": 21066,
+      "cache_hit_rate": 0.796,
+      "cost_usd": 1.3057,
+      "pricing_known": true
+    },
+    {
+      "run": "claude46_test_full",
+      "model": "claude-opus-4-6",
+      "calls": 102,
+      "input_tokens": 3032944,
+      "cache_write_tokens": 1051082,
+      "cache_read_tokens": 42043280,
+      "output_tokens": 337283,
+      "cache_hit_rate": 0.934,
+      "cost_usd": 153.5631,
+      "pricing_known": true
+    },
+    {
+      "run": "gpt_test_smoke2",
+      "model": "gpt-5.2",
+      "calls": 2,
+      "input_tokens": 39301,
+      "cache_write_tokens": 0,
+      "cache_read_tokens": 204032,
+      "output_tokens": 3811,
+      "cache_hit_rate": 0.838,
+      "cost_usd": 0.1127,
+      "pricing_known": true
+    }
+  ],
+  "cumulative_usd": 493.8872
+}
