@@ -1,4 +1,4 @@
-# ContractLM Pilot — Python 3.11
+# nightwing — Python 3.11
 # ---------------------------------------------------------------------------
 # HARNESS + FRONTIER EVAL (runs on this Windows box / any CPU machine).
 # Install with:  pip install -r requirements.txt
