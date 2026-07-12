@@ -182,6 +182,10 @@ def build_trainer(cfg: dict, max_steps: int | None = None,
         report_to=cfg.get("report_to", "none"),
         run_name=cfg.get("run_name", "qwen14b-cuad-qlora"),
     )
+    # newer trl defaults eos_token to a '<EOS_TOKEN>' sentinel that it fails to
+    # substitute under unsloth's patched tokenizer -> pass the real one explicitly
+    if getattr(tokenizer, "eos_token", None):
+        sft_kwargs["eos_token"] = tokenizer.eos_token
     # version-robust: trl renamed max_seq_length -> max_length in 1.x; and drop
     # any kwargs this installed trl/transformers version doesn't accept.
     accepted = set(inspect.signature(SFTConfig.__init__).parameters)
