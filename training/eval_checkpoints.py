@@ -41,7 +41,11 @@ def _checkpoints(CKPT_DIR: Path) -> list[tuple[int, Path]]:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--contracts", type=int, default=20)
-    ap.add_argument("--batch", type=int, default=10)
+    ap.add_argument("--batch", type=int, default=24)
+    ap.add_argument("--every", type=int, default=4,
+                    help="evaluate every Nth checkpoint (always keeps the last "
+                         "numbered one + final_adapter); full sweep of 30+ "
+                         "checkpoints would take ~10 GPU-hours for no extra signal")
     ap.add_argument("--max-new-tokens", type=int, default=128)
     ap.add_argument("--base", default="Qwen/Qwen3-14B")
     ap.add_argument("--ckpt-dir", default="outputs/qwen14b-cuad-lora")
@@ -57,7 +61,14 @@ def main() -> None:
     ckpts = _checkpoints(CKPT_DIR)
     if not ckpts:
         raise SystemExit(f"no checkpoints in {CKPT_DIR} — train first.")
-    print(f"found {len(ckpts)} checkpoints: "
+    if args.every > 1:
+        numbered = [c for c in ckpts if c[0] < 10**9]
+        finals = [c for c in ckpts if c[0] >= 10**9]
+        kept = numbered[::args.every]
+        if numbered and numbered[-1] not in kept:
+            kept.append(numbered[-1])
+        ckpts = sorted(kept) + finals
+    print(f"sweeping {len(ckpts)} checkpoints (every {args.every}th): "
           f"{[s if s < 10**9 else 'final' for s, _ in ckpts]}")
 
     # DEV split ONLY (carved from train by prepare_train). Checkpoint selection
