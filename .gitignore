@@ -47,3 +47,6 @@ results/**/*.log
 
 # --- Internal planning files (not part of the public release) ---
 ContractLM_Pilot_Plan.xlsx
+
+# --- Artifacts downloaded from the GPU pod (weights are large; never commit) ---
+runpod_artifacts/
