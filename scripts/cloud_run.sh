@@ -17,6 +17,8 @@ pip install -q -r requirements.txt
 # its failure kill the run
 pip install -q transformers peft trl accelerate bitsandbytes sentencepiece
 pip install -q unsloth || echo "unsloth install failed — portable fallback will be used"
+# unsloth pulls datasets>=4 which dropped script-based datasets (cuad-qa.py needs 3.x)
+pip install -q "datasets==3.2.0"
 
 echo "== [2/7] $(STAMP) data + contamination gate =="
 [ -f data/cuad/test.json ] || python -m data.download_cuad
