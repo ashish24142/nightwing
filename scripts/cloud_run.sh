@@ -31,7 +31,10 @@ echo "== [3/7] $(STAMP) 10-step training smoke (rule #5) =="
 python -m training.smoke_test
 
 echo "== [4/7] $(STAMP) full LoRA train (resumes from checkpoints) =="
-python -m training.train_qlora
+# ponytail: 2000 steps (~1 epoch) at the measured 16s/step on the no-unsloth
+# path; the dev sweep decides empirically whether to EXTEND (resume) — cheaper
+# and cleaner than guessing 4 epochs upfront (34hr).
+python -m training.train_qlora --max-steps 2000
 
 echo "== [5/7] $(STAMP) dev-split checkpoint sweep =="
 python -m training.eval_checkpoints
