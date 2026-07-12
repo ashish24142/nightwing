@@ -84,7 +84,13 @@ def main() -> None:
     from datasets import load_dataset
 
     print(f"Loading {HF_DATASET} ...")
-    ds = load_dataset(HF_DATASET, trust_remote_code=True)
+    try:
+        ds = load_dataset(HF_DATASET, trust_remote_code=True)
+    except (RuntimeError, TypeError, ValueError):
+        # datasets>=4 dropped script-based datasets; use HF's auto-converted
+        # parquet branch instead (same splits/fields, no script needed)
+        print("  (script dataset unsupported on this datasets version -> parquet branch)")
+        ds = load_dataset(HF_DATASET, revision="refs/convert/parquet")
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     tr, te = stats(ds["train"]), stats(ds["test"])
