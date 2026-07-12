@@ -16,8 +16,10 @@ pip install -q -r requirements.txt
 # unsloth is optional (train_qlora falls back to transformers+peft); don't let
 # its failure kill the run
 pip install -q transformers peft trl accelerate bitsandbytes sentencepiece
-pip install -q unsloth || echo "unsloth install failed — portable fallback will be used"
-# unsloth pulls datasets>=4 which dropped script-based datasets (cuad-qa.py needs 3.x)
+# NO unsloth: its tokenizer patching injects an '<EOS_TOKEN>' sentinel that this
+# trl version never resolves (killed two runs). The transformers+peft path is
+# validated end-to-end; ~1.5x slower training is the price of it working.
+pip uninstall -q -y unsloth unsloth_zoo 2>/dev/null || true
 pip install -q "datasets==3.2.0"
 
 echo "== [2/7] $(STAMP) data + contamination gate =="
