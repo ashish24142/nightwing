@@ -55,6 +55,19 @@ backends:
     prompt_caching: true         # OpenAI auto-caches long shared prefixes
     rps: 12
 
+  # ---- Frontier: GPT-4o via a second Azure resource (Chat Completions API) ---
+  gpt4o:
+    type: frontier_api
+    provider: azure_openai_chat             # POST .../chat/completions
+    model: gpt-4o
+    pricing_model_id: gpt-4o
+    chat_url_env: AZURE_GPT4O_URL           # full endpoint incl. deployment+api-version
+    api_key_env: AZURE_GPT4O_KEY
+    max_tokens: 1024
+    temperature: 0.0                        # non-reasoning model -> deterministic eval
+    prompt_caching: true
+    rps: 12
+
   # ---- Local: fine-tuned 14B LoRA pilot (Phase 2, CLOUD A100 80GB) -------
   # base_model MUST match config/training.yaml's base_model (adapter loaded
   # onto a different base silently produces garbage predictions).
@@ -105,4 +118,9 @@ pricing:
     input: 1.25
     cache_write: 1.25          # OpenAI: no separate cache-write charge
     cache_read: 0.125
+    output: 10.00
+  gpt-4o:
+    input: 2.50
+    cache_write: 2.50
+    cache_read: 1.25           # 50% off cached input
     output: 10.00

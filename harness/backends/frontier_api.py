@@ -89,7 +89,12 @@ class FrontierBackend(Backend):
         self.model_id = cfg.get("model") or _env("model_env", cfg)
         # key into config `pricing:` (deployment name may differ from priced id)
         self.pricing_model_id = cfg.get("pricing_model_id", self.model_id)
-        self.base_url = _env("base_url_env", cfg).rstrip("/")
+        # chat provider carries a full endpoint URL; the others build paths off base_url
+        if self.provider == "azure_openai_chat":
+            self.chat_url = _env("chat_url_env", cfg)
+            self.base_url = None
+        else:
+            self.base_url = _env("base_url_env", cfg).rstrip("/")
         self.api_key = _env("api_key_env", cfg)
         self.rps = float(cfg.get("rps", 2))
         self._min_interval = 1.0 / self.rps if self.rps > 0 else 0.0
@@ -104,6 +109,10 @@ class FrontierBackend(Backend):
         elif self.provider == "azure_openai_responses":
             self.max_output_tokens = int(cfg.get("max_output_tokens", 2048))
             self.api_version = _env("api_version_env", cfg)
+        elif self.provider == "azure_openai_chat":
+            self.max_tokens = int(cfg.get("max_tokens", 1024))
+            t = cfg.get("temperature", None)
+            self.temperature = float(t) if t is not None else None
         else:
             raise ValueError(f"unknown frontier provider '{self.provider}'")
 
@@ -202,10 +211,43 @@ class FrontierBackend(Backend):
         )
         return text, usage
 
+    def _ask_openai_chat(self, contract_block: str, question_text: str):
+        # Azure OpenAI Chat Completions API (gpt-4o etc.). System holds the
+        # instructions+contract (identical prefix -> auto prefix cache across
+        # the 41 questions); the user message varies.
+        headers = {"api-key": self.api_key, "content-type": "application/json"}
+        body = {
+            "model": self.model_id,
+            "messages": [
+                {"role": "system",
+                 "content": P.SYSTEM_PROMPT + "\n\n" + contract_block},
+                {"role": "user", "content": question_text},
+            ],
+            "max_tokens": self.max_tokens,
+        }
+        if self.temperature is not None:
+            body["temperature"] = self.temperature
+        data = _post_with_retries(self.chat_url, headers, body)
+        choices = data.get("choices") or []
+        text = ""
+        if choices and isinstance(choices[0], dict):
+            text = (choices[0].get("message") or {}).get("content") or ""
+        u = data.get("usage") or {}
+        cached = int((u.get("prompt_tokens_details") or {}).get("cached_tokens", 0) or 0)
+        usage = Usage(
+            input_tokens=max(0, int(u.get("prompt_tokens", 0) or 0) - cached),
+            cache_write_tokens=0,
+            cache_read_tokens=cached,
+            output_tokens=int(u.get("completion_tokens", 0) or 0),
+        )
+        return text, usage
+
     def _ask(self, contract_block: str, question_text: str):
         self._throttle()
         if self.provider == "azure_anthropic":
             return self._ask_anthropic(contract_block, question_text)
+        if self.provider == "azure_openai_chat":
+            return self._ask_openai_chat(contract_block, question_text)
         return self._ask_openai_responses(contract_block, question_text)
 
     # -- public ------------------------------------------------------------
