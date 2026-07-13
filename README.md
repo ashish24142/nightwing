@@ -21,10 +21,13 @@ can be re-scored by anyone.
 | gpt-5.2 | 0.423 | ~$13 |
 | nightwing-14b (Qwen3-14B + LoRA, ckpt-1250) | 0.291 | ~$0 after ~$41 training |
 
-The specialist lands RED overall (pre-committed bands) but **beats all three
-frontier models outright on Agreement Date (+0.52) and Effective Date (+0.26)** —
-the annotation-convention categories — and beats gpt-5.2 head-to-head in 11/40
-categories. Full story: [docs/RUN_JOURNAL.md](docs/RUN_JOURNAL.md) ·
+**The punchline: the $40 specialist could not touch Claude overall, but it won
+11 of 40 categories outright against gpt-5.2** (Agreement Date 0.687 vs 0.054,
+Document Name 0.711 vs 0.471, Third Party Beneficiary 0.585 vs 0.355, and 8 more) —
+and it beat **all three** frontier models simultaneously on the
+annotation-convention categories: Agreement Date (+0.52) and Effective Date (+0.26).
+Overall it lands RED on the pre-committed bands (0.291 vs 0.561): the gap between
+frontier and specialist is not a wall, it is category-shaped. Full story: [docs/RUN_JOURNAL.md](docs/RUN_JOURNAL.md) ·
 per-category table: [results/comparison.md](results/comparison.md) ·
 frontier weakness map: [results/category_breakdown.md](results/category_breakdown.md).
 Raw predictions for every model are committed — every number is re-scorable.
