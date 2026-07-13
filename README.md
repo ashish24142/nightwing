@@ -19,11 +19,15 @@ can be re-scored by anyone.
 | claude-opus-4-8 | **0.561** | ~$165 |
 | claude-opus-4-6 | 0.498 | ~$154 |
 | gpt-5.2 | 0.423 | ~$13 |
-| nightwing-14b (Qwen3-14B + LoRA) *(in progress)* | — | ~$0 after training |
+| nightwing-14b (Qwen3-14B + LoRA, ckpt-1250) | 0.291 | ~$0 after ~$41 training |
 
-Per-category breakdown (where frontier is weakest → where a specialist can win):
-[results/category_breakdown.md](results/category_breakdown.md). Raw predictions:
-`results/baselines/*_predictions.json`.
+The specialist lands RED overall (pre-committed bands) but **beats all three
+frontier models outright on Agreement Date (+0.52) and Effective Date (+0.26)** —
+the annotation-convention categories — and beats gpt-5.2 head-to-head in 11/40
+categories. Full story: [docs/RUN_JOURNAL.md](docs/RUN_JOURNAL.md) ·
+per-category table: [results/comparison.md](results/comparison.md) ·
+frontier weakness map: [results/category_breakdown.md](results/category_breakdown.md).
+Raw predictions for every model are committed — every number is re-scorable.
 
 ## Install
 
@@ -101,8 +105,9 @@ ledger writes, stale locks.
 
 - [x] Frontier baselines (Claude Opus 4.8 / 4.6, GPT-5.2) on the official metric
 - [x] 41-category weakness analysis
-- [ ] Qwen3-14B bf16 LoRA specialist + head-to-head comparison
-- [ ] AUPR vs model size vs cost curve (1.5B → 7B → 14B)
+- [x] Qwen3-14B bf16 LoRA specialist + head-to-head comparison (v1: RED overall, 2 category wins — see the run journal)
+- [ ] v2: extractive span head on the 14B backbone (framing fix; 0.9B extractive already scores ~0.47 published)
+- [ ] AUPR vs model size vs cost curve
 - [ ] HuggingFace release (adapter + merged + model card) and demo Space
 
 ## License & attribution
