@@ -14,7 +14,20 @@
       "aupr": 0.422877939458047,
       "prec_at_80_recall": 0.0,
       "prec_at_90_recall": 0.0
+    },
+    "local:Qwen3-14B+checkpoint-1250": {
+      "aupr": 0.2907848101196841,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
     }
   },
-  "best_frontier_aupr": 0.5612734336090937
+  "best_frontier_aupr": 0.5612734336090937,
+  "pilot": "local:Qwen3-14B+checkpoint-1250",
+  "wins": [
+    "Agreement Date",
+    "Effective Date"
+  ],
+  "matches": [],
+  "gap_pts": -27.05,
+  "band": "RED"
 }

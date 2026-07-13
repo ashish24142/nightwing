@@ -121,8 +121,9 @@ def main() -> None:
                                                     encoding="utf-8")
     (ROOT / "results" / "comparison.json").write_text(
         json.dumps(result, indent=2), encoding="utf-8")
-    print("\n".join(md[:14]))
-    print(f"\nsaved -> results/comparison.md, results/comparison.json")
+    # console print ascii-safe (Windows cp1252 chokes on unicode); files keep unicode
+    print("\n".join(md[:14]).encode("ascii", "replace").decode("ascii"))
+    print("\nsaved -> results/comparison.md, results/comparison.json")
 
 
 if __name__ == "__main__":
