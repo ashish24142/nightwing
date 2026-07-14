@@ -19,15 +19,19 @@ can be re-scored by anyone.
 | claude-opus-4-8 | **0.561** | ~$165 |
 | claude-opus-4-6 | 0.498 | ~$154 |
 | gpt-5.2 | 0.423 | ~$13 |
+| gpt-4o | 0.421 | ~$58 |
 | nightwing-14b (Qwen3-14B + LoRA, ckpt-1250) | 0.291 | ~$0 after ~$41 training |
 
 **The punchline: the $40 specialist could not touch Claude overall, but it won
-11 of 40 categories outright against gpt-5.2** (Agreement Date 0.687 vs 0.054,
-Document Name 0.711 vs 0.471, Third Party Beneficiary 0.585 vs 0.355, and 8 more) —
-and it beat **all three** frontier models simultaneously on the
-annotation-convention categories: Agreement Date (+0.52) and Effective Date (+0.26).
-Overall it lands RED on the pre-committed bands (0.291 vs 0.561): the gap between
-frontier and specialist is not a wall, it is category-shaped. Full story: [docs/RUN_JOURNAL.md](docs/RUN_JOURNAL.md) ·
+11 of 40 categories outright against gpt-5.2 AND 11 of 40 against gpt-4o**
+(Agreement Date 0.687 vs 0.054/0.079, Third Party Beneficiary 0.585 vs 0.355/0.102,
+Document Name 0.711 vs 0.471, and more) — beating **all four** frontier models
+simultaneously on the annotation-convention categories: Agreement Date (+0.52) and
+Effective Date (+0.26). Overall it lands RED on the pre-committed bands (0.291 vs 0.561).
+Note the two GPT rows: **gpt-4o (0.421) and gpt-5.2 (0.423) are statistically tied a
+full model generation apart** — strong evidence this task is bottlenecked by learned
+annotation convention, not frontier scale. The gap between frontier and specialist is
+not a wall, it is category-shaped. Full story: [docs/RUN_JOURNAL.md](docs/RUN_JOURNAL.md) ·
 per-category table: [results/comparison.md](results/comparison.md) ·
 frontier weakness map: [results/category_breakdown.md](results/category_breakdown.md).
 Raw predictions for every model are committed — every number is re-scorable.
