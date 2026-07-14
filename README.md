@@ -117,6 +117,17 @@ ledger writes, stale locks.
 - [ ] AUPR vs model size vs cost curve
 - [ ] HuggingFace release (adapter + merged + model card) and demo Space
 
+## Why "nightwing"?
+
+Nightwing is the codename Dick Grayson takes when he stops being Batman's Robin
+and becomes his own hero — the sidekick who trained up and started winning fights
+the mentor couldn't. That is exactly this project's bet: a small, cheap specialist
+that grows out of the frontier models' shadow and beats them on its own turf. It
+doesn't out-punch the giant (Claude) across the board — no sidekick does on day
+one — but on the categories it trained for, it lands clean hits on models many
+times its size and cost. The name is the thesis: not a frontier replacement, a
+specialist that earns its own name in the fields it owns.
+
 ## License & attribution
 
 Apache-2.0. CUAD is released by [The Atticus Project](https://www.atticusprojectai.org/)
