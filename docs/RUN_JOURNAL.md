@@ -27,7 +27,9 @@ pre-committed.
 
 Frontier baselines (measured earlier through the *identical* harness, full
 102-contract test split): claude-opus-4-8 **0.561**, claude-opus-4-6 **0.498**,
-gpt-5.2 **0.423**. Frontier eval cost: ~$165 / ~$154 / ~$13 per run respectively.
+gpt-5.2 **0.423**, gpt-4o **0.421**. Frontier eval cost: ~$165 / ~$154 / ~$13 / ~$58
+per run. Notable: gpt-4o and gpt-5.2 tie a full model generation apart (0.421 vs
+0.423) — this task is bottlenecked by annotation convention, not frontier scale.
 
 ## 2. Environment
 
@@ -99,8 +101,8 @@ helped; the binding constraint is data/framing, not capacity or duration.
 - **Category wins (beats ALL three frontier models):**
   - **Agreement Date: 0.687** vs best-frontier 0.168 (+0.52; GPT-5.2 scores 0.054)
   - **Effective Date: 0.369** vs best-frontier 0.105 (+0.26)
-- **Head-to-head win counts:** vs gpt-5.2 **11**/40 categories; vs claude-opus-4-6
-  **3**/40; vs claude-opus-4-8 **3**/40.
+- **Head-to-head win counts:** vs gpt-5.2 **11**/40 categories; vs gpt-4o **11**/40;
+  vs claude-opus-4-6 **3**/40; vs claude-opus-4-8 **3**/40.
 - Near-misses (within 0.1 of best frontier): Volume Restriction −0.03,
   Post-Termination Services −0.05, Non-Transferable License −0.06, Irrevocable Or
   Perpetual License −0.07, Expiration Date −0.08, Minimum Commitment −0.09.

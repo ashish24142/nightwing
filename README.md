@@ -110,7 +110,7 @@ ledger writes, stale locks.
 
 ## Roadmap
 
-- [x] Frontier baselines (Claude Opus 4.8 / 4.6, GPT-5.2) on the official metric
+- [x] Frontier baselines (Claude Opus 4.8 / 4.6, GPT-5.2, GPT-4o) on the official metric
 - [x] 41-category weakness analysis
 - [x] Qwen3-14B bf16 LoRA specialist + head-to-head comparison (v1: RED overall, 2 category wins — see the run journal)
 - [ ] v2: extractive span head on the 14B backbone (framing fix; 0.9B extractive already scores ~0.47 published)
