@@ -21,21 +21,11 @@ from transformers import (AutoTokenizer, Trainer, TrainingArguments,
                           default_data_collator)
 from peft import LoraConfig, TaskType, get_peft_model
 
-from harness.extractive import ROOT, build_features, load_examples, load_qa_model
+from harness.extractive import (CACHE_ROOT, ROOT, _titles, load_examples,
+                                load_qa_model, make_dataset)
 
 LORA_TARGETS = ["q_proj", "k_proj", "v_proj", "o_proj",
                 "gate_proj", "up_proj", "down_proj"]
-
-
-class FeatureDataset(torch.utils.data.Dataset):
-    def __init__(self, feats):
-        self.feats = feats
-
-    def __len__(self):
-        return len(self.feats)
-
-    def __getitem__(self, i):
-        return self.feats[i]
 
 
 def _training_args(**want) -> TrainingArguments:
@@ -60,18 +50,37 @@ def main() -> None:
     ap.add_argument("--lr", type=float, default=2e-4)
     ap.add_argument("--lora-r", type=int, default=16)
     ap.add_argument("--save-steps", type=int, default=250)
+    ap.add_argument("--neg-per-pos", type=int, default=2,
+                    help="null windows kept per positive window (imbalance)")
+    ap.add_argument("--exclude-json", default=str(ROOT / "data" / "cuad" / "dev.json"),
+                    help="drop these contracts from training (dev is carved from train)")
+    ap.add_argument("--cache-tag", default=None,
+                    help="reuse a prebuilt feature cache under outputs/ext_cache/")
     args = ap.parse_args()
 
     tok = AutoTokenizer.from_pretrained(args.base_model)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
 
-    print(f"[data] loading train (limit={args.limit}) ...", flush=True)
-    examples = load_examples(args.train_json, limit=args.limit)
-    feats = build_features(examples, tok, args.max_seq_len, args.stride, is_training=True)
-    pos = sum(1 for f in feats if f["start_positions"] != 0)
+    cache_dir = (CACHE_ROOT / args.cache_tag) if args.cache_tag else None
+    print(f"[data] loading train (limit={args.limit}, exclude={args.exclude_json}) ...", flush=True)
+    examples = load_examples(args.train_json, limit=args.limit,
+                             exclude_json=args.exclude_json)
+    # rule #1, in code: training titles must not touch dev or test
+    train_titles = {e["title"] for e in examples}
+    for guard in ("dev.json", "test.json"):
+        gp = ROOT / "data" / "cuad" / guard
+        if gp.exists():
+            overlap = train_titles & _titles(gp)
+            assert not overlap, f"CONTAMINATION: {len(overlap)} train titles in {guard}"
+    print(f"[gate] {len(train_titles)} train contracts, 0 overlap with dev/test", flush=True)
+    feats = make_dataset(examples, tok, args.max_seq_len, args.stride,
+                         is_training=True, neg_per_pos=args.neg_per_pos,
+                         cache_dir=cache_dir)
+    pos = sum(1 for s in feats["start_positions"] if s != 0)
     print(f"[data] {len(examples)} qas -> {len(feats)} windows "
-          f"({pos} with an in-window answer, {len(feats)-pos} null)", flush=True)
+          f"({pos} positive, {len(feats)-pos} null @ neg_per_pos={args.neg_per_pos})",
+          flush=True)
 
     model = load_qa_model(args.base_model, dtype=torch.bfloat16)
     peft_cfg = LoraConfig(task_type=TaskType.QUESTION_ANS, r=args.lora_r,
@@ -85,10 +94,13 @@ def main() -> None:
         gradient_accumulation_steps=args.grad_accum, learning_rate=args.lr,
         num_train_epochs=args.epochs, max_steps=args.max_steps,
         warmup_ratio=0.03, lr_scheduler_type="cosine", bf16=True,
-        logging_steps=5, save_steps=args.save_steps, save_total_limit=8,
+        logging_steps=20, save_steps=args.save_steps, save_total_limit=8,
         report_to=[], dataloader_pin_memory=False,
+        remove_unused_columns=False,  # peft forward sig hides start/end_positions
     )
-    trainer = Trainer(model=model, args=targs, train_dataset=FeatureDataset(feats),
+    keep_cols = ["input_ids", "attention_mask", "start_positions", "end_positions"]
+    feats = feats.remove_columns([c for c in feats.column_names if c not in keep_cols])
+    trainer = Trainer(model=model, args=targs, train_dataset=feats,
                       data_collator=default_data_collator)
     result = trainer.train()
     loss = result.training_loss

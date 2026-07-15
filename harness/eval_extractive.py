@@ -4,11 +4,12 @@ eval_extractive.py — v2 eval: run the QA head over a split, score officially.
 Forward pass -> start/end logits -> postprocess to one best span per qid ->
 harness/scoring.py (the SAME official CUAD scorer used for every frontier
 baseline). Output n-best + AUPR land in results/pilot_v2/, directly comparable
-to v1 and the frontier rows.
+to v1 and the frontier rows. Features come from the disk-cached arrow Dataset;
+offsets are read lazily per feature so full splits never load into RAM.
 
     python -m harness.eval_extractive --base-model Qwen/Qwen2.5-0.5B-Instruct \
-        --adapter outputs/ext_smoke/final_adapter --split-json data/cuad/dev.json \
-        --limit 3 --out results/pilot_v2/smoke.json
+        --adapter outputs/ext_0p5b/final_adapter --split-json data/cuad/dev.json \
+        --out results/pilot_v2/dev_0p5b.json
 """
 from __future__ import annotations
 
@@ -20,23 +21,25 @@ import torch
 from transformers import AutoTokenizer
 
 from harness import scoring
-from harness.extractive import (ROOT, build_features, load_examples,
-                                load_qa_model, postprocess)
+from harness.extractive import (CACHE_ROOT, ROOT, load_examples, load_qa_model,
+                                make_dataset, postprocess)
 
 
-def _infer_logits(model, feats, batch_size, device):
+def _infer_logits(model, ds, batch_size, device):
     """Return (start_logits, end_logits) as per-feature python lists, in order."""
     starts, ends = [], []
     model.eval()
+    n = len(ds)
     with torch.no_grad():
-        for i in range(0, len(feats), batch_size):
-            batch = feats[i:i + batch_size]
-            ids = torch.tensor([f["input_ids"] for f in batch], device=device)
-            mask = torch.tensor([f["attention_mask"] for f in batch], device=device)
+        for i in range(0, n, batch_size):
+            sl = ds[i:i + batch_size]
+            ids = torch.tensor(sl["input_ids"], device=device)
+            mask = torch.tensor(sl["attention_mask"], device=device)
             out = model(input_ids=ids, attention_mask=mask)
             starts.extend(out.start_logits.float().cpu().tolist())
             ends.extend(out.end_logits.float().cpu().tolist())
-            print(f"  eval {min(i+batch_size,len(feats))}/{len(feats)} windows", flush=True)
+            if (i // batch_size) % 20 == 0:
+                print(f"  eval {min(i+batch_size,n)}/{n} windows", flush=True)
     return starts, ends
 
 
@@ -49,12 +52,13 @@ def main() -> None:
     ap.add_argument("--max-seq-len", type=int, default=512)
     ap.add_argument("--stride", type=int, default=128)
     ap.add_argument("--batch-size", type=int, default=16)
+    ap.add_argument("--cache-tag", default=None,
+                    help="reuse a prebuilt eval feature cache under outputs/ext_cache/")
     ap.add_argument("--out", default="results/pilot_v2/eval.json")
     args = ap.parse_args()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    tok_src = args.adapter or args.base_model
-    tok = AutoTokenizer.from_pretrained(tok_src)
+    tok = AutoTokenizer.from_pretrained(args.adapter or args.base_model)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
 
@@ -64,17 +68,22 @@ def main() -> None:
         model = PeftModel.from_pretrained(model, args.adapter)
     model.to(device)
 
+    cache_dir = (CACHE_ROOT / args.cache_tag) if args.cache_tag else None
     examples = load_examples(args.split_json, limit=args.limit)
-    feats = build_features(examples, tok, args.max_seq_len, args.stride, is_training=False)
-    print(f"[eval] {len(examples)} qas -> {len(feats)} windows on {device}", flush=True)
+    ds = make_dataset(examples, tok, args.max_seq_len, args.stride,
+                      is_training=False, cache_dir=cache_dir)
+    print(f"[eval] {len(examples)} qas -> {len(ds)} windows on {device}", flush=True)
 
-    starts, ends = _infer_logits(model, feats, args.batch_size, device)
-    nbest = postprocess(examples, feats, starts, ends, max_answer_len=args.max_seq_len)
+    starts, ends = _infer_logits(model, ds, args.batch_size, device)
+    example_ids = ds["example_id"]              # small: one string per feature
+    nbest = postprocess(examples, example_ids,
+                        lambda fi: ds[fi]["offset_mapping"],  # lazy per-feature
+                        starts, ends, max_answer_len=args.max_seq_len)
 
-    # official scoring: filter GT to the exact qids we evaluated (subset-safe)
     gt_full = scoring.load_gt(args.split_json)
     gt = {k: gt_full[k] for k in nbest}
     overall = scoring.score_overall(nbest, gt)
+    per = scoring.score_per_category(nbest, gt)
     print(f"\n[AUPR] overall={overall['aupr']:.4f}  "
           f"p@80r={overall['prec_at_80_recall']:.3f}  "
           f"p@90r={overall['prec_at_90_recall']:.3f}", flush=True)
@@ -84,7 +93,7 @@ def main() -> None:
     out.write_text(json.dumps({
         "base_model": args.base_model, "adapter": args.adapter,
         "split": args.split_json, "limit": args.limit,
-        "n_qas": len(examples), "overall": overall,
+        "n_qas": len(examples), "overall": overall, "per_category": per,
     }, indent=2), encoding="utf-8")
     (out.parent / (out.stem + "_predictions.json")).write_text(
         json.dumps(nbest, indent=2), encoding="utf-8")
