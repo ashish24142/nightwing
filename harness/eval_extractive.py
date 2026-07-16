@@ -58,7 +58,9 @@ def main() -> None:
     args = ap.parse_args()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    tok = AutoTokenizer.from_pretrained(args.adapter or args.base_model)
+    # tokenizer comes from the base model (a LoRA adapter never changes it, and
+    # intermediate Trainer checkpoints don't save tokenizer files).
+    tok = AutoTokenizer.from_pretrained(args.base_model)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
 
