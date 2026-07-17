@@ -56,6 +56,8 @@ def main() -> None:
                     help="drop these contracts from training (dev is carved from train)")
     ap.add_argument("--cache-tag", default=None,
                     help="reuse a prebuilt feature cache under outputs/ext_cache/")
+    ap.add_argument("--resume-from", default=None,
+                    help="checkpoint dir to resume from ('auto' = latest in output-dir)")
     args = ap.parse_args()
 
     tok = AutoTokenizer.from_pretrained(args.base_model)
@@ -102,7 +104,8 @@ def main() -> None:
     feats = feats.remove_columns([c for c in feats.column_names if c not in keep_cols])
     trainer = Trainer(model=model, args=targs, train_dataset=feats,
                       data_collator=default_data_collator)
-    result = trainer.train()
+    resume = True if args.resume_from == "auto" else args.resume_from
+    result = trainer.train(resume_from_checkpoint=resume) if resume else trainer.train()
     loss = result.training_loss
     print(f"[done] final training_loss={loss:.4f}", flush=True)
     assert loss == loss and loss < 20, f"loss broken: {loss}"
