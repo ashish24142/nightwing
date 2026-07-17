@@ -26,7 +26,7 @@ python -c "import torch; v=torch.__version__; exit(0 if v.startswith('2.1') and 
 # template's torchvision/torchaudio are built for torch 2.4 and poison
 # transformers' imports after the torch upgrade; text pipeline needs neither.
 pip uninstall -q -y torchvision torchaudio 2>/dev/null || true
-pip install -q "transformers==5.5.0" "peft==0.19.1" "datasets==3.2.0" accelerate sentencepiece pyyaml tenacity python-dotenv tqdm pandas
+pip install -q "transformers==5.5.0" "peft==0.19.1" "datasets==3.2.0" accelerate sentencepiece pyyaml tenacity python-dotenv tqdm pandas scikit-learn
 
 echo "== [2/6] $(STAMP) data + contamination gate (rule #1) =="
 [ -f data/cuad/test.json ] || python -m data.download_cuad
