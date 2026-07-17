@@ -10,6 +10,7 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 
 export HF_HOME=/workspace/hf
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 mkdir -p "$HF_HOME" results/pilot_v2
 STAMP() { date -u +"%H:%M:%S"; }
 

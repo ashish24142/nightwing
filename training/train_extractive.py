@@ -85,6 +85,9 @@ def main() -> None:
           flush=True)
 
     model = load_qa_model(args.base_model, dtype=torch.bfloat16)
+    # without activation checkpointing a 14B at batch 8 stores 40 layers of
+    # activations and OOMs even on 80GB; with it, LoRA training fits easily.
+    model.enable_input_require_grads()
     peft_cfg = LoraConfig(task_type=TaskType.QUESTION_ANS, r=args.lora_r,
                           lora_alpha=args.lora_r * 2, lora_dropout=0.05,
                           target_modules=LORA_TARGETS, modules_to_save=["qa_outputs"])
@@ -99,6 +102,8 @@ def main() -> None:
         logging_steps=20, save_steps=args.save_steps, save_total_limit=8,
         report_to=[], dataloader_pin_memory=False,
         remove_unused_columns=False,  # peft forward sig hides start/end_positions
+        gradient_checkpointing=True,
+        gradient_checkpointing_kwargs={"use_reentrant": False},
     )
     keep_cols = ["input_ids", "attention_mask", "start_positions", "end_positions"]
     feats = feats.remove_columns([c for c in feats.column_names if c not in keep_cols])
