@@ -17,8 +17,12 @@ STAMP() { date -u +"%H:%M:%S"; }
 TRAIN="python -u -m training.train_extractive --max-steps 2000 --neg-per-pos 2 --lr 2e-4 --save-steps 500"
 EVAL="python -u -m harness.eval_extractive --split-json data/cuad/dev.json"
 
-echo "== [1/6] $(STAMP) deps =="
-pip install -q "datasets==3.2.0" transformers peft accelerate sentencepiece pyyaml tenacity python-dotenv tqdm pandas
+echo "== [1/6] $(STAMP) deps (pin to the locally-validated stack) =="
+# template ships torch 2.4; transformers 5.x needs newer torch (DTensor import).
+# Match the stack the pipeline was validated on locally: torch 2.11 + tf 5.5.
+python -c "import torch; v=torch.__version__; exit(0 if v.startswith('2.1') and int(v.split('.')[1])>=8 else 1)" 2>/dev/null || \
+  pip install -q -U torch --index-url https://download.pytorch.org/whl/cu128
+pip install -q "transformers==5.5.0" "peft==0.19.1" "datasets==3.2.0" accelerate sentencepiece pyyaml tenacity python-dotenv tqdm pandas
 
 echo "== [2/6] $(STAMP) data + contamination gate (rule #1) =="
 [ -f data/cuad/test.json ] || python -m data.download_cuad
