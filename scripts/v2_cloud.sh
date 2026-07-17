@@ -87,6 +87,8 @@ BASE = {"0p5b": "Qwen/Qwen2.5-0.5B-Instruct", "1p5b": "Qwen/Qwen2.5-1.5B-Instruc
         "7b": "Qwen/Qwen2.5-7B-Instruct", "14b": "Qwen/Qwen3-14B"}
 best = None
 for p in sorted(Path("results/pilot_v2").glob("dev_*_ckpt*.json")):
+    if p.stem.endswith("_predictions"):
+        continue
     d = json.loads(p.read_text())
     size = p.stem.split("_")[1]
     ck = "checkpoint-1000" if p.stem.endswith("1000") else "final_adapter"
