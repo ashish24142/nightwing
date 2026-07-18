@@ -40,6 +40,20 @@ tied a generation apart, says the same about frontier scale). The v2
 pre-registered prediction (clear 0.50) missed, published as committed; the
 measured deficit is the deliberately lean recipe (1 epoch, subsampled negatives,
 zero tuning), which is v3's controlled variable.
+### Head-to-head: categories won against each frontier model (40 scorable)
+
+| Specialist | vs claude-opus-4-8 | vs claude-opus-4-6 | vs gpt-5.2 | vs gpt-4o | beats ALL four |
+|---|---|---|---|---|---|
+| **nightwing-v2 (extractive)** | **8**/40 | **11**/40 | **22**/40 | **25**/40 | **6** |
+| nightwing-v1 (generative) | 3/40 | 3/40 | 11/40 | 11/40 | 2 |
+
+A model that costs ~$0 per run wins the majority of clause categories against
+both GPT frontier models. The six categories where it beats all four at once:
+Agreement Date, Effective Date, Expiration Date, Document Name, Volume
+Restriction, Post-Termination Services. The full 6-model x 40-category grid,
+with the best score per category bolded, is in
+[results/comparison.md](results/comparison.md).
+
 Full story: [v1 journal](docs/RUN_JOURNAL.md) | [v2 journal](docs/RUN_JOURNAL_V2.md) |
 per-category table: [results/comparison.md](results/comparison.md) |
 frontier weakness map: [results/category_breakdown.md](results/category_breakdown.md).
