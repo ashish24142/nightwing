@@ -1,4 +1,4 @@
-# nightwing — every model, every category (official CUAD AUPR, full 102-contract test split)
+# nightwing, every model, every category (official CUAD AUPR, full 102-contract test split)
 
 ## Overall
 
@@ -11,7 +11,7 @@
 | nightwing-v2-14b (extractive) | **0.389** | 0.000 | 0.000 | -0.173 |
 | nightwing-v1-14b (generative) | **0.291** | 0.000 | 0.000 | -0.270 |
 
-## Per-category — the full grid (40 scorable; 'Price Restrictions' excluded — 0 positives in test)
+## Per-category, the full grid (40 scorable; 'Price Restrictions' excluded, 0 positives in test)
 
 Best score per category in **bold**.
 
@@ -67,4 +67,4 @@ Best score per category in **bold**.
 
 ## Signal band (pre-committed thresholds, v1 pilot decision): **RED**
 
-*v1 gap -27.0 pts, 2 outright wins. Presented for the human funding decision — not auto-acted on. A RED result is still a successful pilot outcome. v2 (extractive framing, same budget) closed the gap to -17.3 pts — see docs/RUN_JOURNAL_V2.md.*
+*v1 gap -27.0 pts, 2 outright wins. Presented for the human funding decision, not auto-acted on. A RED result is still a successful pilot outcome. v2 (extractive framing, same budget) closed the gap to -17.3 pts, see docs/RUN_JOURNAL_V2.md.*

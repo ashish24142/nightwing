@@ -1,10 +1,10 @@
 # CUAD per-category frontier weakness (P1.6)
 
-Overall AUPR — **claude-opus-4-8** 0.561 · **claude-opus-4-6** 0.498 · **gpt-5.2** 0.423
+Overall AUPR, **claude-opus-4-8** 0.561 | **claude-opus-4-6** 0.498 | **gpt-5.2** 0.423
 
 40 categories scored ( 'Price Restrictions' excluded: 0 positives in test ).
 
-## Top-10 winnable categories (weakest frontier — most room for the pilot)
+## Top-10 winnable categories (weakest frontier, most room for the pilot)
 
 | # | Category | best frontier AUPR | (by) | mean |
 |---|---|---|---|---|

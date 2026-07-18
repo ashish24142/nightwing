@@ -1,12 +1,12 @@
 """
-build_comparison.py — the full grid: every model, every category, one table.
+build_comparison.py, the full grid: every model, every category, one table.
 
 Reads every result JSON in results/baselines/ (frontier), results/pilot/
 (v1 generative fine-tune) and results/pilot_v2/ (v2 extractive fine-tune),
 and builds THE comparison: overall ranking + a wide per-category table with
 the best score per category bolded, head-to-head win counts, and the FIXED
 pre-committed Green/Yellow/Red band for the v1 pilot decision (historical,
-never auto-acted on — surfaced for a HUMAN).
+never auto-acted on, surfaced for a HUMAN).
 
 Run:  python -m analysis.build_comparison
 Out:  results/comparison.md  +  results/comparison.json
@@ -64,7 +64,7 @@ def main() -> None:
     cats = sorted({c for r in models.values() for c in r["per_category"]}
                   - DEGENERATE)
 
-    md = ["# nightwing — every model, every category "
+    md = ["# nightwing, every model, every category "
           "(official CUAD AUPR, full 102-contract test split)\n"]
 
     # ---- overall ranking -------------------------------------------------
@@ -81,8 +81,8 @@ def main() -> None:
 
     # ---- the full grid ---------------------------------------------------
     order = [n for n, _ in ranked]      # columns in overall-rank order
-    md.append(f"\n## Per-category — the full grid ({len(cats)} scorable; "
-              "'Price Restrictions' excluded — 0 positives in test)\n")
+    md.append(f"\n## Per-category, the full grid ({len(cats)} scorable; "
+              "'Price Restrictions' excluded, 0 positives in test)\n")
     md.append("Best score per category in **bold**.\n")
     md.append("| Category | " + " | ".join(order) + " |")
     md.append("|---|" + "---|" * len(order))
@@ -114,7 +114,7 @@ def main() -> None:
                   + f" | {len(beats_all)} |")
         result_h2h[sname] = {"wins": wins, "beats_all": beats_all}
 
-    # ---- pre-committed band (v1 pilot decision — historical) -------------
+    # ---- pre-committed band (v1 pilot decision, historical) --------------
     result = {"overall": {n: r["overall"] for n, r in models.items()},
               "best_frontier_aupr": best_frontier_overall,
               "head_to_head": result_h2h}
@@ -137,11 +137,11 @@ def main() -> None:
         md.append(f"\n## Signal band (pre-committed thresholds, v1 pilot "
                   f"decision): **{band}**\n")
         md.append(f"*v1 gap {gap_pts:+.1f} pts, {len(wins)} outright wins. "
-                  "Presented for the human funding decision — not auto-acted on. "
+                  "Presented for the human funding decision, not auto-acted on. "
                   "A RED result is still a successful pilot outcome. "
                   "v2 (extractive framing, same budget) closed the gap to "
-                  f"{(next(iter(v2.values()))['overall']['aupr'] - best_frontier_overall) * 100:+.1f} pts — "
-                  "see docs/RUN_JOURNAL_V2.md.*" if v2 else "*…*")
+                  f"{(next(iter(v2.values()))['overall']['aupr'] - best_frontier_overall) * 100:+.1f} pts, "
+                  "see docs/RUN_JOURNAL_V2.md.*" if v2 else "*...*")
         result.update({"pilot": pilot_name, "wins": wins, "matches": matches,
                        "gap_pts": round(gap_pts, 2), "band": band})
 

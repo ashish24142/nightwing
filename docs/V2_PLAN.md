@@ -1,4 +1,4 @@
-# nightwing v2 — Experiment Plan (pre-committed before spend)
+# nightwing v2, Experiment Plan (pre-committed before spend)
 
 **Question:** v1 showed a 14B *generative* fine-tune scores 0.291 on CUAD while
 frontier tops out at 0.561. The interpretation was "task framing, not scale, is
@@ -25,7 +25,7 @@ DeBERTa-xlarge (0.9B, extractive) scores ~0.47.
 - **Pipeline:** `training/train_extractive.py` + `harness/eval_extractive.py`
   (committed, validated end-to-end locally; caught two silent bugs before any
   cloud spend). Reuses transformers' QA head; scored by the unmodified official
-  CUAD evaluator via `harness/scoring.py` — identical to every frontier row.
+  CUAD evaluator via `harness/scoring.py`, identical to every frontier row.
 - **Data:** CUAD train split minus the 40 dev contracts (368 clean), sliding
   512-token windows (stride 128), negatives subsampled 2:1 per positive.
   Contamination gate asserted in code at every training launch (rule #1).
@@ -44,15 +44,15 @@ DeBERTa-xlarge (0.9B, extractive) scores ~0.47.
 | 7B train + dev eval | ~4 h |
 | 14B train + dev eval | ~6 h |
 | Dev sweep + ONE test eval (best model; extractive eval is a single forward pass, not 11.5 h of generation) | ~1.5 h |
-| **Total** | **~14–15 h ≈ $22–25** |
+| **Total** | **~14-15 h ~ $22-25** |
 
-Realistic all-in **~$40–60** (setup, retries, idle); hard ceiling **$300** —
+Realistic all-in **~$40-60** (setup, retries, idle); hard ceiling **$300**:
 abort and reassess if crossed. Project total stays inside the original $1,000
 cap (~$545 spent to date).
 
 ## Decision criteria (fixed)
 
-- **Prediction resolves TRUE:** 14B extractive ≥ 0.50 test AUPR → framing
+- **Prediction resolves TRUE:** 14B extractive >= 0.50 test AUPR -> framing
   thesis confirmed at scale; publish v2 results (journal, comparison, essay
   follow-up, HF release of the best adapter).
 - **Prediction resolves FALSE:** publish that too, with the measured curve.
@@ -63,16 +63,16 @@ cap (~$545 spent to date).
 
 Data augmentation, hard-negative mining beyond the 2:1 subsample, per-category
 calibration, ensembles, multi-answer spans (current head predicts the single
-best span per window; some CUAD questions have multiple gold spans — noted as
+best span per window; some CUAD questions have multiple gold spans, noted as
 a known ceiling on recall-heavy categories).
 
 ---
 
-## RESOLUTION (2026-07-18, after the run — plan above unchanged)
+## RESOLUTION (2026-07-18, after the run, plan above unchanged)
 
 - **Prediction: MISS.** 14B extractive test AUPR = **0.3885** (< 0.50).
 - **Thesis: CONFIRMED.** +9.8 pts over v1's generative 0.291 with framing as the
   only change; the 0.5B extractive already matches v1's 14B generative.
-- **Curve:** dev 0.284 / 0.289 / 0.300 / 0.303 for 0.5B/1.5B/7B/14B — scale is
+- **Curve:** dev 0.284 / 0.289 / 0.300 / 0.303 for 0.5B/1.5B/7B/14B, scale is
   nearly flat under the identical lean recipe.
 - Actual spend: ~$32 (vs ~$300 ceiling). Full account: `RUN_JOURNAL_V2.md`.
