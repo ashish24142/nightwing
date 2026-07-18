@@ -121,7 +121,8 @@ ledger writes, stale locks.
 - [x] v2: extractive span head — 0.389 test (+9.8 pts over v1; pre-registered 0.50 missed, published as committed)
 - [x] AUPR vs model size curve (0.5B/1.5B/7B/14B: 0.284/0.289/0.300/0.303 dev — nearly flat; framing, not scale)
 - [ ] v3: full training recipe (3 epochs, full negatives, dev-swept LR, calibration) — the measured bottleneck
-- [ ] HuggingFace release (adapter + merged + model card) and demo Space
+- [x] HuggingFace release: [nightwing-14b-cuad-extractive](https://huggingface.co/ashish24142/nightwing-14b-cuad-extractive) (v2 adapter + model card; card includes the required backbone-loading recipe)
+- [ ] Demo Space
 
 ## Why "nightwing"?
 
