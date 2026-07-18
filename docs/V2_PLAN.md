@@ -65,3 +65,14 @@ Data augmentation, hard-negative mining beyond the 2:1 subsample, per-category
 calibration, ensembles, multi-answer spans (current head predicts the single
 best span per window; some CUAD questions have multiple gold spans — noted as
 a known ceiling on recall-heavy categories).
+
+---
+
+## RESOLUTION (2026-07-18, after the run — plan above unchanged)
+
+- **Prediction: MISS.** 14B extractive test AUPR = **0.3885** (< 0.50).
+- **Thesis: CONFIRMED.** +9.8 pts over v1's generative 0.291 with framing as the
+  only change; the 0.5B extractive already matches v1's 14B generative.
+- **Curve:** dev 0.284 / 0.289 / 0.300 / 0.303 for 0.5B/1.5B/7B/14B — scale is
+  nearly flat under the identical lean recipe.
+- Actual spend: ~$32 (vs ~$300 ceiling). Full account: `RUN_JOURNAL_V2.md`.

@@ -20,18 +20,23 @@ can be re-scored by anyone.
 | claude-opus-4-6 | 0.498 | ~$154 |
 | gpt-5.2 | 0.423 | ~$13 |
 | gpt-4o | 0.421 | ~$58 |
-| nightwing-14b (Qwen3-14B + LoRA, ckpt-1250) | 0.291 | ~$0 after ~$41 training |
+| **nightwing-v2-14b (extractive span head)** | **0.389** | ~$0 after ~$32 training |
+| nightwing-v1-14b (generative, ckpt-1250) | 0.291 | ~$0 after ~$41 training |
 
-**The punchline: the $40 specialist could not touch Claude overall, but it won
-11 of 40 categories outright against gpt-5.2 AND 11 of 40 against gpt-4o**
-(Agreement Date 0.687 vs 0.054/0.079, Third Party Beneficiary 0.585 vs 0.355/0.102,
-Document Name 0.711 vs 0.471, and more) — beating **all four** frontier models
-simultaneously on the annotation-convention categories: Agreement Date (+0.52) and
-Effective Date (+0.26). Overall it lands RED on the pre-committed bands (0.291 vs 0.561).
-Note the two GPT rows: **gpt-4o (0.421) and gpt-5.2 (0.423) are statistically tied a
-full model generation apart** — strong evidence this task is bottlenecked by learned
-annotation convention, not frontier scale. The gap between frontier and specialist is
-not a wall, it is category-shaped. Full story: [docs/RUN_JOURNAL.md](docs/RUN_JOURNAL.md) ·
+**The punchline, v2 edition: changing the task framing — not the model, not the
+data, not the budget — moved the specialist from 0.291 to 0.389, and it now beats
+gpt-4o in 25 of 40 categories and gpt-5.2 in 22 of 40** while trailing them
+overall by ~3 points. It beats all four frontier models simultaneously in 6
+categories (Agreement Date 0.829 vs best-frontier 0.168, Expiration Date 0.853
+vs 0.708, Effective Date, and more), and v1's worst reasoning collapses recovered
+hard (Covenant Not To Sue 0.107 → 0.539). The scaling curve is the other finding:
+0.5B → 14B under the identical recipe moves dev AUPR only 0.284 → 0.303 —
+**framing does the work; scale is almost decorative** (and gpt-4o vs gpt-5.2,
+tied a generation apart, says the same about frontier scale). The v2
+pre-registered prediction (clear 0.50) missed — published as committed; the
+measured deficit is the deliberately lean recipe (1 epoch, subsampled negatives,
+zero tuning), which is v3's controlled variable.
+Full story: [v1 journal](docs/RUN_JOURNAL.md) · [v2 journal](docs/RUN_JOURNAL_V2.md) ·
 per-category table: [results/comparison.md](results/comparison.md) ·
 frontier weakness map: [results/category_breakdown.md](results/category_breakdown.md).
 Raw predictions for every model are committed — every number is re-scorable.
@@ -113,8 +118,9 @@ ledger writes, stale locks.
 - [x] Frontier baselines (Claude Opus 4.8 / 4.6, GPT-5.2, GPT-4o) on the official metric
 - [x] 41-category weakness analysis
 - [x] Qwen3-14B bf16 LoRA specialist + head-to-head comparison (v1: RED overall, 2 category wins — see the run journal)
-- [ ] v2: extractive span head on the 14B backbone (framing fix; 0.9B extractive already scores ~0.47 published)
-- [ ] AUPR vs model size vs cost curve
+- [x] v2: extractive span head — 0.389 test (+9.8 pts over v1; pre-registered 0.50 missed, published as committed)
+- [x] AUPR vs model size curve (0.5B/1.5B/7B/14B: 0.284/0.289/0.300/0.303 dev — nearly flat; framing, not scale)
+- [ ] v3: full training recipe (3 epochs, full negatives, dev-swept LR, calibration) — the measured bottleneck
 - [ ] HuggingFace release (adapter + merged + model card) and demo Space
 
 ## Why "nightwing"?

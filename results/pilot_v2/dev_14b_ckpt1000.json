@@ -1,0 +1,219 @@
+{
+  "base_model": "Qwen/Qwen3-14B",
+  "adapter": "outputs/ext_14b/checkpoint-1000",
+  "split": "data/cuad/dev.json",
+  "limit": null,
+  "n_qas": 2280,
+  "overall": {
+    "aupr": 0.29517819860179567,
+    "prec_at_80_recall": 0.0,
+    "prec_at_90_recall": 0.0
+  },
+  "per_category": {
+    "Affiliate License-Licensee": {
+      "aupr": 0.06790123456790123,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Affiliate License-Licensor": {
+      "aupr": 0.16666666666666666,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Agreement Date": {
+      "aupr": 0.7579268292682927,
+      "prec_at_80_recall": 0.85,
+      "prec_at_90_recall": 0.0
+    },
+    "Anti-Assignment": {
+      "aupr": 0.44570627958785847,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Audit Rights": {
+      "aupr": 0.14011145988705598,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Cap On Liability": {
+      "aupr": 0.21033091202582727,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Change Of Control": {
+      "aupr": 0.19021739130434784,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Competitive Restriction Exception": {
+      "aupr": 0.1142857142857143,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Covenant Not To Sue": {
+      "aupr": 0.23981481481481481,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Document Name": {
+      "aupr": 0.7591589480346175,
+      "prec_at_80_recall": 0.8048780487804879,
+      "prec_at_90_recall": 0.0
+    },
+    "Effective Date": {
+      "aupr": 0.5565978736710445,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Exclusivity": {
+      "aupr": 0.1058013762780654,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Expiration Date": {
+      "aupr": 0.6684531450577664,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Governing Law": {
+      "aupr": 0.8865625000000001,
+      "prec_at_80_recall": 0.925,
+      "prec_at_90_recall": 0.925
+    },
+    "Insurance": {
+      "aupr": 0.13627681375580533,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Ip Ownership Assignment": {
+      "aupr": 0.04272134560596099,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Irrevocable Or Perpetual License": {
+      "aupr": 0.4545567279942281,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Joint Ip Ownership": {
+      "aupr": 0.1411764705882353,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "License Grant": {
+      "aupr": 0.17130854477453358,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Liquidated Damages": {
+      "aupr": 0.3323118279569892,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Minimum Commitment": {
+      "aupr": 0.09431707465594934,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Most Favored Nation": {
+      "aupr": 0.3333333333333333,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "No-Solicit Of Customers": {
+      "aupr": 0.5,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "No-Solicit Of Employees": {
+      "aupr": 1.0,
+      "prec_at_80_recall": 1.0,
+      "prec_at_90_recall": 1.0
+    },
+    "Non-Compete": {
+      "aupr": 0.24509803921568624,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Non-Disparagement": {
+      "aupr": 0.1717171717171717,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Non-Transferable License": {
+      "aupr": 0.24310726310726308,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Notice Period To Terminate Renewal": {
+      "aupr": 0.934435261707989,
+      "prec_at_80_recall": 0.9090909090909091,
+      "prec_at_90_recall": 0.9090909090909091
+    },
+    "Parties": {
+      "aupr": 0.3518073402763186,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Post-Termination Services": {
+      "aupr": 0.09264088187702324,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Price Restrictions": {
+      "aupr": 0.26666666666666666,
+      "prec_at_80_recall": 0.2,
+      "prec_at_90_recall": 0.2
+    },
+    "Renewal Term": {
+      "aupr": 0.674589700056593,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Revenue/Profit Sharing": {
+      "aupr": 0.11354481169553474,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Rofr/Rofo/Rofn": {
+      "aupr": 0.07112794612794612,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Source Code Escrow": {
+      "aupr": 0.0657439446366782,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Termination For Convenience": {
+      "aupr": 0.43122655104130225,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Third Party Beneficiary": {
+      "aupr": 0.3434065934065934,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Uncapped Liability": {
+      "aupr": 0.2883522727272727,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Unlimited/All-You-Can-Eat-License": {
+      "aupr": 0.25396825396825395,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Volume Restriction": {
+      "aupr": 0.07649456521739131,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "Warranty Duration": {
+      "aupr": 0.07897664071190211,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    }
+  }
+}
