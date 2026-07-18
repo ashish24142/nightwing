@@ -58,11 +58,13 @@ done
 BESTLR=$(python - <<'PY'
 import json
 from pathlib import Path
-best = max(Path("results/pilot_v3").glob("lrsweep_*.json"),
-           key=lambda p: json.loads(p.read_text())["overall"]["aupr"])
+cands = [p for p in Path("results/pilot_v3").glob("lrsweep_*.json")
+         if not p.stem.endswith("_predictions")]
+best = max(cands, key=lambda p: json.loads(p.read_text())["overall"]["aupr"])
 print(best.stem.replace("lrsweep_", ""))
 PY
 )
+[ -n "$BESTLR" ] || { echo "LR SELECTION FAILED"; exit 1; }
 echo "WINNER-LR: $BESTLR"
 
 echo "== [5/6] $(STAMP) 14B: 3 epochs, neg 4:1, lr $BESTLR =="
