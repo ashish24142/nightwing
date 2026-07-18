@@ -4,7 +4,7 @@
 
 [Essays on this experiment](https://migrationassurance.com/) |
 [Model on Hugging Face](https://huggingface.co/ashish24142/nightwing-14b-cuad-extractive) |
-[Author on LinkedIn](https://in.linkedin.com/in/ashish-kr-singh-ml)
+[Author on LinkedIn](https://www.linkedin.com/in/ashish-kr-singh-ml/)
 
 **Can a fine-tuned open 14B model match frontier LLMs on contract clause extraction, at ~$0 per contract instead of ~$1.60?**
 
@@ -141,7 +141,7 @@ specialist that earns its own name in the fields it owns.
 
 ## License & attribution
 
-By [Ashish Kumar Singh](https://in.linkedin.com/in/ashish-kr-singh-ml). The full
+By [Ashish Kumar Singh](https://www.linkedin.com/in/ashish-kr-singh-ml/). The full
 write-ups live at [migrationassurance.com](https://migrationassurance.com/):
 [the v1 experiment](https://migrationassurance.com/forty-dollar-specialist-vs-frontier/)
 and [the v2 sequel](https://migrationassurance.com/one-change-ten-points/). The
