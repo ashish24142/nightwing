@@ -20,14 +20,49 @@
       "prec_at_80_recall": 0.0,
       "prec_at_90_recall": 0.0
     },
-    "local:Qwen3-14B+checkpoint-1250": {
+    "nightwing-v1-14b (generative)": {
       "aupr": 0.2907848101196841,
+      "prec_at_80_recall": 0.0,
+      "prec_at_90_recall": 0.0
+    },
+    "nightwing-v2-14b (extractive)": {
+      "aupr": 0.3885120476320126,
       "prec_at_80_recall": 0.0,
       "prec_at_90_recall": 0.0
     }
   },
   "best_frontier_aupr": 0.5612734336090937,
-  "pilot": "local:Qwen3-14B+checkpoint-1250",
+  "head_to_head": {
+    "nightwing-v1-14b (generative)": {
+      "wins": {
+        "claude-opus-4-6": 3,
+        "claude-opus-4-8": 3,
+        "gpt-4o": 11,
+        "gpt-5.2": 11
+      },
+      "beats_all": [
+        "Agreement Date",
+        "Effective Date"
+      ]
+    },
+    "nightwing-v2-14b (extractive)": {
+      "wins": {
+        "claude-opus-4-6": 11,
+        "claude-opus-4-8": 8,
+        "gpt-4o": 25,
+        "gpt-5.2": 22
+      },
+      "beats_all": [
+        "Agreement Date",
+        "Document Name",
+        "Effective Date",
+        "Expiration Date",
+        "Post-Termination Services",
+        "Volume Restriction"
+      ]
+    }
+  },
+  "pilot": "nightwing-v1-14b (generative)",
   "wins": [
     "Agreement Date",
     "Effective Date"
