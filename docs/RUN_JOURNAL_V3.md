@@ -20,7 +20,7 @@ v3.1 (same recipe at the v2-proven lr 2e-4) approved and queued.**
 | Run | Recipe | ep 0.5 | ep 1 | ep 2 | ep 3 | final |
 |---|---|---|---|---|---|---|
 | v2 | lr 2e-4, neg 2:1, 1 epoch | 0.2952 | **0.3034** | - | - | - |
-| v3 | lr 4e-4, neg 4:1, 3 epochs | - | 0.1287 | (pending) | 0.2451 | 0.2445 |
+| v3 | lr 4e-4, neg 4:1, 3 epochs | - | 0.1287 | 0.2411 | 0.2451 | 0.2445 |
 | v3.1 | lr 2e-4, neg 4:1, 3 epochs | - | queued | queued | queued | queued |
 
 ## Finding: proxy-swept learning rates do not transfer 0.5B -> 14B
