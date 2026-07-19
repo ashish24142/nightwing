@@ -24,6 +24,7 @@ ROOT = Path(__file__).resolve().parent.parent
 BASE_DIR = ROOT / "results" / "baselines"
 PILOT_DIR = ROOT / "results" / "pilot"
 PILOT_V2_DIR = ROOT / "results" / "pilot_v2"
+PILOT_V3_DIR = ROOT / "results" / "pilot_v3"
 MATCH_MARGIN = 0.02                   # "matches" = within 2 AUPR pts
 
 # Fixed pre-committed bands (v1 pilot decision; chosen BEFORE results existed).
@@ -55,10 +56,15 @@ def main() -> None:
     v2 = _load_dir(PILOT_V2_DIR, "test_*.json")
     v2 = {f"nightwing-v2-{k.replace('test_', '')} (extractive)": r
           for k, r in v2.items()} if any("model_id" not in r for r in v2.values()) else v2
+    # v3-family test results join automatically when they exist (v3 itself
+    # never touched test by protocol; v3.1+ may).
+    v3 = _load_dir(PILOT_V3_DIR, "test_*.json")
+    v3 = {f"nightwing-{k.replace('test_14b_', '')}-14b (extractive, tuned recipe)": r
+          for k, r in v3.items()} if any("model_id" not in r for r in v3.values()) else v3
     if not frontier:
         raise SystemExit("ABORT: no frontier baselines in results/baselines/.")
 
-    specialists = {**v1, **v2}
+    specialists = {**v1, **v2, **v3}
     models = {**frontier, **specialists}
     best_frontier_overall = max(r["overall"]["aupr"] for r in frontier.values())
     cats = sorted({c for r in models.values() for c in r["per_category"]}
