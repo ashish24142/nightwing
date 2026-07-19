@@ -5,7 +5,8 @@ LR swept on a 0.5B proxy). Pre-registered prediction: clears 0.50 test AUPR.
 Plan: `V3_PLAN.md`, committed before spend.
 
 **Status: v3 recipe FAILED via LR transfer; test never touched (guard worked).
-v3.1 (same recipe at the v2-proven lr 2e-4) approved and queued.**
+v3.1 was launched, then POSTPONED after ~40 minutes of training (balance ran
+low after idle time between runs); pod terminated. Resume path below.**
 
 ## The LR sweep (0.5B proxy, 1 epoch, neg 4:1, dev split)
 
@@ -43,9 +44,27 @@ is reported as designed.
   real question (LR transfer), just not the one it was aimed at (epochs and
   negatives), so v3.1 re-asks that question with the LR confound removed.
 
-## v3.1 (queued at abort time)
+## v3.1 (postponed, ready to resume)
 
-Same 3 epochs + neg 4:1 at lr 2e-4, reusing the pod's feature caches.
-Stricter test gate than v3: the single test eval fires ONLY if v3.1's best
-dev beats v2's 0.3034; otherwise v2 stays the model and test stays pristine.
-Runbook: `scripts/v3_1_cloud.sh`. This section will be completed with results.
+Same 3 epochs + neg 4:1 at lr 2e-4. Stricter test gate than v3: the single
+test eval fires ONLY if v3.1's best dev beats v2's 0.3034; otherwise v2 stays
+the model and test stays pristine.
+
+**To resume later (fresh pod, ~19 h, ~$40):** provision an A100 SXM 80GB
+(pytorch template, 180 GB volume), inject the SSH key via web terminal, then:
+
+    cd /workspace && git clone https://github.com/ashish24142/nightwing && cd nightwing
+    # scp the verified data/cuad/*.json from the laptop, then:
+    nohup bash scripts/v3_1_cloud.sh > /workspace/v31.log 2>&1 &
+
+The runbook rebuilds its caches (~40 min) and self-gates as above.
+
+## Cost accounting (v3 + aborted v3.1)
+
+| Item | Spend |
+|---|---|
+| v3: sweep + 14B train + 5 dev evals | ~$31 |
+| Idle between v3 abort and v3.1 launch (watcher bug) | ~$11 |
+| v3.1: 40 min of training before postponement | ~$1 |
+| **This pod total (~29 h)** | **~$43** |
+| **Project total (v1 + v2 + v3)** | **~$620 of the $1,000 cap** |
