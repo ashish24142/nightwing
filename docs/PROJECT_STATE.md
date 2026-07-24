@@ -33,8 +33,9 @@ Key findings, in one line each:
   cross-linked homepage.
 - Hugging Face (ashish24142/nightwing-14b-cuad-extractive): v2 adapter +
   honest model card with the required backbone-loading recipe.
-- arXiv: paper source READY in paper/ (compiles clean, 6 pp), NOT yet
-  submitted; needs the author's arXiv account (see paper/SUBMIT_ARXIV.md).
+- Paper: PUBLISHED on Zenodo, DOI 10.5281/zenodo.21530247 (https://doi.org/10.5281/zenodo.21530247),
+  CC BY 4.0. arXiv posting still pending cs.CL endorsement (code HYXJ8P,
+  submission #7864415 saved; see paper/SUBMIT_ARXIV.md).
 
 ## Money
 
@@ -51,8 +52,9 @@ baseline.
 
 ## Open items
 
-1. **arXiv upload** (author action, $0): create account at arxiv.org, follow
-   paper/SUBMIT_ARXIV.md. Endorsement for cs.CL can take 1-2 days.
+1. **arXiv posting** (optional now that the DOI exists): endorsement code
+   HYXJ8P emailed to the author; forward to any qualified cs.* author, then
+   resume saved submission #7864415 from arxiv.org/user.
 2. **v3.1, postponed by decision**: 3 epochs + neg 4:1 at lr 2e-4, the clean
    epochs-and-negatives test. Resume: fresh A100 SXM 80GB pod, clone repo,
    scp data/cuad/*.json, run scripts/v3_1_cloud.sh (~19 h, ~$40; account

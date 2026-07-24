@@ -2,6 +2,7 @@
 
 *The sidekick that trained up.*
 
+[Paper (DOI)](https://doi.org/10.5281/zenodo.21530247) |
 [Essays on this experiment](https://migrationassurance.com/) |
 [Model on Hugging Face](https://huggingface.co/ashish24142/nightwing-14b-cuad-extractive) |
 [Author on LinkedIn](https://www.linkedin.com/in/ashish-kr-singh-ml/)
@@ -160,7 +161,8 @@ write-ups live at [migrationassurance.com](https://migrationassurance.com/):
 [the v1 experiment](https://migrationassurance.com/forty-dollar-specialist-vs-frontier/)
 and [the v2 sequel](https://migrationassurance.com/one-change-ten-points/). The
 trained adapter is on
-[Hugging Face](https://huggingface.co/ashish24142/nightwing-14b-cuad-extractive).
+[Hugging Face](https://huggingface.co/ashish24142/nightwing-14b-cuad-extractive), and
+the paper is published at [doi.org/10.5281/zenodo.21530247](https://doi.org/10.5281/zenodo.21530247).
 
 Apache-2.0. CUAD is released by [The Atticus Project](https://www.atticusprojectai.org/)
 under CC BY 4.0, cite [Hendrycks et al., 2021](https://arxiv.org/abs/2103.06268).
